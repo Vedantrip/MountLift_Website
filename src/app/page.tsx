@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
-export default function MountLife() {
+export default function MountLift() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set())
@@ -229,7 +229,7 @@ export default function MountLife() {
               className="relative inline-flex items-center group"
             >
               <span className="relative z-10 text-2xl font-bold tracking-tight transition-all duration-300 group-hover:tracking-wider group-hover:text-gray-700">
-                MOUNTLIFE
+                MountLift
               </span>
 
               {/* Arrow / mountain ridges behind logo */}
@@ -375,7 +375,7 @@ export default function MountLife() {
                 transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s',
               }}
             >
-              MountLife is a data-driven influencer marketing agency that connects premium brands
+              MountLift is a data-driven influencer marketing agency that connects premium brands
               with authentic creators to drive measurable results and meaningful engagement.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
@@ -653,7 +653,7 @@ export default function MountLife() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-8 md:mb-0">
-              <div className="text-2xl font-bold mb-4 tracking-tight">MOUNTLIFE</div>
+              <div className="text-2xl font-bold mb-4 tracking-tight">MountLift</div>
               <p className="text-sm text-gray-400 font-light tracking-wide">
                 Elevating brands through authentic influencer partnerships
               </p>

@@ -16,7 +16,7 @@ const roadmapSteps: Step[] = [
     year: '2022',
     title: 'The Idea',
     description:
-      'MountLife began as a small collective obsessed with authentic creator storytelling and measurable performance.',
+      'MountLift began as a small collective obsessed with authentic creator storytelling and measurable performance.',
   },
   {
     year: '2023',
@@ -32,7 +32,7 @@ const roadmapSteps: Step[] = [
   },
   {
     year: '2025',
-    title: 'MountLife Today',
+    title: 'MountLift Today',
     description:
       'A focused influencer marketing agency helping brands design campaigns that feel native, human, and performance-led.',
   },
@@ -82,7 +82,7 @@ export default function AboutUsPage() {
             }`}
           >
             <p className="text-xs font-medium tracking-[0.25em] text-gray-500 mb-4 uppercase">
-              ABOUT MOUNTLIFE
+              ABOUT MountLift
             </p>
             <h1 className="text-4xl lg:text-5xl font-bold tracking-tight mb-6">
               We build campaigns where{' '}
@@ -90,7 +90,7 @@ export default function AboutUsPage() {
               brands grow together.
             </h1>
             <p className="text-gray-600 text-base lg:text-lg leading-relaxed mb-8 max-w-xl">
-              MountLife is an influencer-first marketing agency focused on performance, brand lift,
+              MountLift is an influencer-first marketing agency focused on performance, brand lift,
               and long-term creator partnerships. We sit at the intersection of data, storytelling,
               and culture.
             </p>
@@ -215,7 +215,7 @@ export default function AboutUsPage() {
               JOURNEY
             </p>
             <h2 className="text-2xl lg:text-3xl font-semibold tracking-tight mb-3">
-              How MountLife is growing up
+              How MountLift is growing up
             </h2>
             <p className="text-sm text-gray-600 max-w-xl">
               A quick snapshot of where we started and how we’re shaping the next phase of

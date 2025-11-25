@@ -28,8 +28,10 @@ export default function MainNavbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? 'bg-white/85 backdrop-blur-md shadow-xl'
-          : 'bg-white/70 backdrop-blur-sm'
+          // Made ~10% more transparent than before: 85 -> 75
+          ? 'bg-white/75 backdrop-blur-md shadow-xl'
+          // Made ~10% more transparent than before: 70 -> 60
+          : 'bg-white/60 backdrop-blur-sm'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -39,16 +41,22 @@ export default function MainNavbar() {
           <Link
             href="/"
             className="relative inline-flex items-center text-2xl font-bold tracking-tight transition-all duration-300 group"
+            aria-label="MountLift home"
           >
             <span className="relative z-10 transition-all duration-300 group-hover:tracking-[0.22em] group-hover:text-gray-800">
-              MOUNTLIFE
+              MOUNTLIFT
             </span>
 
             {/* Mountain Ridge + Arrow Behind Logo */}
-            <span className="pointer-events-none absolute -bottom-4 left-1/2 -translate-x-1/2 w-20 h-6 transform transition-transform duration-500 group-hover:-translate-y-[4px]">
+            <span
+              className="pointer-events-none absolute -bottom-4 left-1/2 -translate-x-1/2 w-24 h-6 transform transition-transform duration-400 will-change-transform group-hover:-translate-y-2"
+              aria-hidden="true"
+            >
               <svg
                 viewBox="0 0 100 30"
-                className="w-full h-full text-gray-900/25 transition-colors duration-500 group-hover:text-gray-900/70"
+                className="w-full h-full text-gray-900/25 transition-colors duration-400 group-hover:text-gray-900/70"
+                xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="none"
               >
                 {/* Mountain Ridges */}
                 <polyline
@@ -58,8 +66,9 @@ export default function MainNavbar() {
                   strokeWidth="2.4"
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  strokeOpacity="0.95"
                 />
-                {/* Arrow Head */}
+                {/* Arrow Head (keeps it subtle) */}
                 <polyline
                   points="80,10 92,4 88,12"
                   fill="none"
@@ -67,6 +76,7 @@ export default function MainNavbar() {
                   strokeWidth="2.4"
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  strokeOpacity="0.95"
                 />
               </svg>
             </span>
@@ -115,7 +125,7 @@ export default function MainNavbar() {
 
       {/* MOBILE MENU */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-200 shadow-lg">
+        <div className="lg:hidden bg-white/75 backdrop-blur-sm border-t border-gray-200 shadow-lg">
           <div className="px-6 py-4 space-y-3">
             {navItems.map((item) => (
               <Link

@@ -15,32 +15,32 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   // This controls the text displayed on the browser tab
-  title: "MountLife | Influencer Marketing Agency",
+  title: "MountLift | Influencer Marketing Agency",
   description:
-    "Elevating brands through authentic influencer partnerships. MountLife is a data-driven influencer marketing agency connecting premium brands with authentic creators.",
+    "Elevating brands through authentic influencer partnerships. MountLift is a data-driven influencer marketing agency connecting premium brands with authentic creators.",
   keywords: [
     "Influencer Marketing",
-    "MountLife",
+    "MountLift",
     "Brand Agency",
     "Creators",
     "Marketing Strategy",
   ],
-  authors: [{ name: "MountLife Team" }],
+  authors: [{ name: "MountLift Team" }],
   icons: {
     // This controls the small icon on the browser tab
     // If you have a favicon.ico in your 'public' folder, this will use it.
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "MountLife - Lift Your Brand",
+    title: "MountLift - Lift Your Brand",
     description: "Elevating brands through authentic influencer partnerships.",
-    url: "https://mountlife.com",
-    siteName: "MountLife",
+    url: "https://MountLift.com",
+    siteName: "MountLift",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "MountLife",
+    title: "MountLift",
     description: "Elevating brands through authentic influencer partnerships.",
   },
 };
