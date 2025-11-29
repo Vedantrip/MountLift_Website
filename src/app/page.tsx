@@ -29,6 +29,7 @@ export default function MountLift() {
   const [headlineOpacity, setHeadlineOpacity] = useState(1)
   const [scrollY, setScrollY] = useState(0)
   const [magneticButton, setMagneticButton] = useState({ x: 0, y: 0 })
+  const [sending, setSending] = useState(false)
 
   const benefitsRef = useRef<HTMLDivElement>(null)
   const caseStudiesRef = useRef<HTMLDivElement>(null)
@@ -169,9 +170,37 @@ export default function MountLift() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // ---- UPDATED: submits to /api/contact ----
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Form submitted:', formData)
+    if (sending) return
+    setSending(true)
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await res.json()
+
+      if (res.ok && data.success) {
+        // success
+        alert('Message sent — thanks!')
+        setFormData({ name: '', email: '', phone: '', message: '' })
+      } else {
+        // server responded but with error
+        const errMsg = data?.error || data?.message || 'Unknown error'
+        alert('Error sending message: ' + errMsg)
+        console.error('Contact API error:', data)
+      }
+    } catch (err) {
+      console.error('Network error sending contact:', err)
+      alert('Network error sending contact — please try again.')
+    } finally {
+      setSending(false)
+    }
   }
 
   const createRipple = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -638,9 +667,10 @@ export default function MountLift() {
                 />
                 <button
                   type="submit"
-                  className="w-full md:w-auto px-12 py-5 bg-black text-white font-medium hover:bg-gray-800 transition-all duration-500 transform hover:scale-105 hover:shadow-xl"
+                  disabled={sending}
+                  className="w-full md:w-auto px-12 py-5 bg-black text-white font-medium hover:bg-gray-800 transition-all duration-500 transform hover:scale-105 hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  Send Message
+                  {sending ? 'Sending…' : 'Send Message'}
                 </button>
               </form>
             </div>
