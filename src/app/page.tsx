@@ -1,3 +1,4 @@
+// src/app/page.tsx
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
@@ -15,6 +16,9 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
+type ToastType = 'success' | 'error' | 'info'
+type ToastItem = { id: number; type: ToastType; title?: string; message: string }
+
 export default function MountLift() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -30,6 +34,24 @@ export default function MountLift() {
   const [scrollY, setScrollY] = useState(0)
   const [magneticButton, setMagneticButton] = useState({ x: 0, y: 0 })
   const [sending, setSending] = useState(false)
+
+  // toasts
+  const [toasts, setToasts] = useState<ToastItem[]>([])
+  const TOAST_DURATION = 4000
+
+  const pushToast = (type: ToastType, message: string, title?: string) => {
+    const id = Date.now() + Math.floor(Math.random() * 1000)
+    const t: ToastItem = { id, type, title, message }
+    setToasts((prev) => [...prev, t])
+    // auto remove
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((x) => x.id !== id))
+    }, TOAST_DURATION)
+  }
+
+  const removeToast = (id: number) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id))
+  }
 
   const benefitsRef = useRef<HTMLDivElement>(null)
   const caseStudiesRef = useRef<HTMLDivElement>(null)
@@ -170,11 +192,18 @@ export default function MountLift() {
     }))
   }
 
-  // ---- UPDATED: submits to /api/contact ----
+  // ---- UPDATED: submits to /api/contact, uses toast UI ----
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (sending) return
     setSending(true)
+
+    // quick client-side validation
+    if (!formData.email || !formData.message || !formData.name) {
+      pushToast('error', 'Please fill name, email and message.')
+      setSending(false)
+      return
+    }
 
     try {
       const res = await fetch('/api/contact', {
@@ -186,18 +215,16 @@ export default function MountLift() {
       const data = await res.json()
 
       if (res.ok && data.success) {
-        // success
-        alert('Message sent — thanks!')
+        pushToast('success', 'Message sent — thanks!')
         setFormData({ name: '', email: '', phone: '', message: '' })
       } else {
-        // server responded but with error
         const errMsg = data?.error || data?.message || 'Unknown error'
-        alert('Error sending message: ' + errMsg)
+        pushToast('error', 'Error sending message: ' + errMsg)
         console.error('Contact API error:', data)
       }
     } catch (err) {
       console.error('Network error sending contact:', err)
-      alert('Network error sending contact — please try again.')
+      pushToast('error', 'Network error — please try again.')
     } finally {
       setSending(false)
     }
@@ -729,6 +756,50 @@ export default function MountLift() {
           </div>
         </div>
       </footer>
+
+      {/* Toast container */}
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        className="fixed inset-x-0 bottom-8 flex items-end justify-center pointer-events-none z-60"
+      >
+        <div className="w-full max-w-lg px-4">
+          <div className="flex flex-col gap-3">
+            {toasts.map((t) => (
+              <div
+                key={t.id}
+                className={`pointer-events-auto rounded-lg px-4 py-3 shadow-lg flex items-start gap-3 border ${
+                  t.type === 'success'
+                    ? 'bg-white border-green-200'
+                    : t.type === 'error'
+                    ? 'bg-white border-red-200'
+                    : 'bg-white border-gray-200'
+                }`}
+                role="status"
+              >
+                <div className="mt-0.5">
+                  <div
+                    className={`w-3 h-3 rounded-full mt-1 ${
+                      t.type === 'success' ? 'bg-green-500' : t.type === 'error' ? 'bg-red-500' : 'bg-gray-500'
+                    }`}
+                  />
+                </div>
+                <div className="flex-1">
+                  {t.title && <div className="text-sm font-semibold mb-1">{t.title}</div>}
+                  <div className="text-sm text-gray-700">{t.message}</div>
+                </div>
+                <button
+                  onClick={() => removeToast(t.id)}
+                  className="text-sm text-gray-400 hover:text-gray-600 ml-2"
+                  aria-label="Dismiss"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
       <style jsx>{`
         @keyframes fade-in-up {
