@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
 
-# top-level static values
+# Top-level static values (literal strings)
 env:
   PROJECT_ID: utopian-genius-462615-b2
   REGION: asia-south1
@@ -15,9 +15,9 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-    # compute IMAGE inside job env (safe)
+    # IMAGE uses literal project/region/repo plus github.sha (allowed)
     env:
-      IMAGE: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO }}/ml-image:${{ github.sha }}
+      IMAGE: asia-south1-docker.pkg.dev/utopian-genius-462615-b2/mountlift/ml-image:${{ github.sha }}
 
     steps:
       - name: Checkout
@@ -40,8 +40,7 @@ jobs:
 
       - name: Configure Docker for Artifact Registry
         run: |
-          # configure docker to use Artifact Registry
-          gcloud --quiet auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+          gcloud --quiet auth configure-docker asia-south1-docker.pkg.dev
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -55,11 +54,11 @@ jobs:
         with:
           service: ${{ env.SERVICE }}
           image: ${{ env.IMAGE }}
-          region: ${{ env.REGION }}
+          region: asia-south1
           project_id: ${{ env.PROJECT_ID }}
           allow_unauthenticated: true
 
       - name: Show Cloud Run URL
         run: |
           echo "Deployed to Cloud Run service: ${{ env.SERVICE }}"
-          gcloud run services describe ${{ env.SERVICE }} --platform=managed --region=${{ env.REGION }} --format="value(status.url)"
+          gcloud run services describe ${{ env.SERVICE }} --platform=managed --region=asia-south1 --format="value(status.url)"
