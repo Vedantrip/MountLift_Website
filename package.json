@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon --exec \"next dev -p 3000\" --watch src --ext ts,tsx,js,jsx",
-    "build": "next build && xcopy /E /I /Y .next\\static .next\\standalone\\.next\\static && xcopy /E /I /Y public .next\\standalone\\public",
-    "start": "set NODE_ENV=production&& node .next\\standalone\\server.js",
-    "lint": "next lint",
-    "db:push": "prisma db push",
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:reset": "prisma migrate reset"
+  "dev": "nodemon --exec \"next dev -p 3000\" --watch src --ext ts,tsx,js,jsx",
+  "build": "next build",
+  "start": "next start",
+  "lint": "next lint",
+  "db:push": "prisma db push",
+  "db:generate": "prisma generate",
+  "db:migrate": "prisma migrate dev",
+  "db:reset": "prisma migrate reset"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
