@@ -368,7 +368,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 <Link
                   key={index}
                   href={
-                    item === 'Influencer Marketing' ? '#influencer-marketing' :
+                    item === 'Influencer Marketing' ? '/influencer-marketing' :
                     item === 'Tools for Creators' ? '#tools' : 
                     item === 'Exclusive Representation' ? '#exclusive-representation' :
                     item === 'Our Work' ? '#our-work' :
@@ -403,7 +403,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 <Link
                   key={index}
                   href={
-                    item === 'Influencer Marketing' ? '#influencer-marketing' :
+                    item === 'Influencer Marketing' ? '/influencer-marketing' :
                     item === 'Tools for Creators' ? '#tools' : 
                     item === 'Exclusive Representation' ? '#exclusive-representation' :
                     item === 'Our Work' ? '#our-work' :
@@ -541,6 +541,18 @@ const handleSubmit = async (e: React.FormEvent) => {
 
       {/* Key Benefits Cards */}
       <section id="benefits" ref={benefitsRef} className="py-32 px-6 lg:px-8 bg-gray-50/50 relative">
+        {/* Grid background */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.05] z-0">
+          <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `
+            linear-gradient(to right, #000 1px, transparent 1px),
+            linear-gradient(to bottom, #000 1px, transparent 1px)
+            `,
+            backgroundSize: '48px 48px',
+            }}/></div>
+
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
             {benefits.map((benefit, index) => {
