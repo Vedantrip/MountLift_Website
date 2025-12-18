@@ -20,6 +20,7 @@ export default function MountLift() {
   const [magneticButton, setMagneticButton] = useState({ x: 0, y: 0 })
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [activeBenefit, setActiveBenefit] = useState<number | null>(null)
 
   const benefitsRef = useRef<HTMLDivElement>(null)
   const [showPopup, setShowPopup] = useState(false)
@@ -194,32 +195,48 @@ const handleSubmit = async (e: React.FormEvent) => {
     'Contact'
   ]
 
-  const benefits = [
-    {
-      title: 'Focused Campaign Design',
-      description: 'Strategic influencer campaigns tailored to your brand objectives and target audience.',
-      icon: Target,
-      color: 'from-slate-600 to-slate-500'
-    },
-    {
-      title: 'Industry-Specific Expertise',
-      description: 'Deep knowledge across fashion, beauty, tech, lifestyle, and emerging markets.',
-      icon: TrendingUp,
-      color: 'from-zinc-600 to-zinc-500'
-    },
-    {
-      title: 'Consumer-Centric & Content-Driven',
-      description: 'Creating authentic content that resonates with your audience and drives engagement.',
-      icon: Lightbulb,
-      color: 'from-stone-600 to-stone-500'
-    },
-    {
-      title: 'Passionate & Top-Tier Team',
-      description: 'Dedicated professionals committed to elevating your brand through influencer partnerships.',
-      icon: Users,
-      color: 'from-neutral-600 to-neutral-500'
-    }
-  ]
+const benefits = [
+  {
+    title: 'Focused Campaign Design',
+    short: 'Strategic influencer campaigns tailored to your brand.',
+    long: `We design influencer campaigns with a clear objective-first approach.
+Every campaign begins with understanding your brand DNA, target audience, and
+conversion goals. From creator selection to content format and publishing
+timelines, each decision is made to maximize relevance, authenticity, and ROI.`,
+    icon: Target,
+    color: 'from-slate-600 to-slate-500'
+  },
+  {
+    title: 'Industry-Specific Expertise',
+    short: 'Deep understanding across multiple verticals.',
+    long: `Our team brings hands-on exposure across fashion, beauty, tech,
+lifestyle, and emerging consumer brands. This allows us to anticipate trends,
+understand platform nuances, and design campaigns that resonate naturally
+within each industry ecosystem.`,
+    icon: TrendingUp,
+    color: 'from-zinc-600 to-zinc-500'
+  },
+  {
+    title: 'Consumer-Centric & Content-Driven',
+    short: 'Authentic content that drives engagement.',
+    long: `We focus on storytelling that feels organic, not promotional.
+By aligning creators with audience psychology and platform behavior, we
+ensure content feels native, relatable, and trust-driven — resulting in
+higher engagement and stronger brand recall.`,
+    icon: Lightbulb,
+    color: 'from-stone-600 to-stone-500'
+  },
+  {
+    title: 'Passionate & Top-Tier Team',
+    short: 'A team obsessed with brand growth.',
+    long: `Our team is built around strategists, creator managers, and analysts
+who live and breathe the creator economy. We work as an extension of your brand,
+constantly optimizing campaigns, monitoring performance, and pushing creative
+boundaries.`,
+    icon: Users,
+    color: 'from-neutral-600 to-neutral-500'
+  }
+]
 
   const caseStudies = [
     {
@@ -540,42 +557,103 @@ const handleSubmit = async (e: React.FormEvent) => {
       <div className="relative h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-1"></div>
 
       {/* Key Benefits Cards */}
-      <section id="benefits" ref={benefitsRef} className="py-32 px-6 lg:px-8 bg-gray-50/50 relative">
+      <section
+        id="benefits"
+        ref={benefitsRef}
+        className="relative min-h-screen px-6 lg:px-8 bg-gray-50 overflow-hidden flex items-center"
+      >
         {/* Grid background */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.05] z-0">
+        <div className="absolute inset-0 pointer-events-none opacity-[0.05]">
           <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-            linear-gradient(to right, #000 1px, transparent 1px),
-            linear-gradient(to bottom, #000 1px, transparent 1px)
-            `,
-            backgroundSize: '48px 48px',
-            }}/></div>
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `
+                linear-gradient(to right, #000 1px, transparent 1px),
+                linear-gradient(to bottom, #000 1px, transparent 1px)
+              `,
+              backgroundSize: '48px 48px',
+            }}
+          />
+        </div>
 
-        <div className="max-w-7xl mx-auto">
+        <div className="relative z-10 max-w-7xl mx-auto w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
             {benefits.map((benefit, index) => {
               const Icon = benefit.icon
+
               return (
                 <div
                   key={index}
-                  className={`group p-8 bg-white border border-gray-100 hover:border-gray-300 transition-all duration-700 hover:shadow-2xl hover:-translate-y-3 cursor-pointer ${
-                    visibleSections.has('benefits') 
-                      ? 'animate-card-enter opacity-100 translate-y-0' 
-                      : 'opacity-0 translate-y-12'
-                  }`}
-                  style={{ 
-                    transitionDelay: `${index * 60}ms`,
-                    transform: visibleSections.has('benefits') ? `translateY(0) rotate(${index % 2 === 0 ? 0.5 : -0.5}deg)` : 'translateY(48px) rotate(0deg)'
-                  }}
+                  onMouseEnter={() => setActiveBenefit(index)}
+                  onMouseLeave={() => setActiveBenefit(null)}
+                  className="relative bg-white border border-gray-200 rounded-2xl transition-all duration-500 hover:shadow-xl cursor-pointer"
                 >
-                  <div className={`relative w-16 h-16 mb-8 bg-gradient-to-r ${benefit.color} rounded-2xl flex items-center justify-center transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 group-hover:shadow-lg cursor-pointer`}>
-                    <Icon className="w-8 h-8 text-white" />
-                    <div className="absolute inset-0 rounded-2xl bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                  {/* MODIFIED: The Popup Box */}
+                  {activeBenefit === index && (
+                    <div className="fixed inset-0 z-[999] flex items-center justify-center pointer-events-none">
+                      {/* 1. Transparent Backdrop (doesn't block mouse) */}
+                      <div className="absolute inset-0 bg-white/20 backdrop-blur-sm transition-opacity duration-300" />
+                      
+                      {/* 2. The Form Sized Box */}
+                      <div 
+                        className="relative bg-white w-full max-w-md p-8 rounded-3xl shadow-2xl border border-gray-100 transform transition-all duration-300 scale-100 opacity-100"
+                        style={{ animation: 'hero-fade 0.3s ease-out' }}
+                      >
+                        <div className="text-center">
+                          {/* Icon */}
+                          <div
+                            className={`mx-auto mb-6 w-16 h-16 rounded-2xl
+                            bg-gradient-to-r ${benefits[activeBenefit].color}
+                            flex items-center justify-center shadow-lg`}
+                          >
+                            {React.createElement(benefits[activeBenefit].icon, {
+                              className: "w-8 h-8 text-white"
+                            })}
+                          </div>
+
+                          {/* Title */}
+                          <h2 className="text-2xl font-bold mb-4 tracking-tight text-gray-900">
+                            {benefits[activeBenefit].title}
+                          </h2>
+
+                          {/* Description */}
+                          <p className="text-gray-600 leading-relaxed text-sm mb-6">
+                            {benefits[activeBenefit].long}
+                          </p>
+
+                          {/* Footer Hint */}
+                          <div className="pt-4 border-t border-gray-50">
+                            <p className="text-xs uppercase tracking-widest text-gray-400 font-medium">
+                              Move cursor away to close
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Standard Card Inner Content (Visible when inactive) */}
+                  <div className="p-8 h-full flex flex-col justify-between">
+                    <div
+                      className={`w-16 h-16 bg-gradient-to-r ${benefit.color}
+                      rounded-2xl flex items-center justify-center
+                      transition-all duration-500 group-hover:scale-110`}
+                    >
+                      <Icon className="w-8 h-8 text-white" />
+                    </div>
+
+                    <h3 className="text-xl font-bold tracking-tight mt-6">
+                      {benefit.title}
+                    </h3>
+
+                    <p className="mt-6 text-gray-600 text-sm leading-relaxed opacity-0 translate-y-6 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                      {benefit.short}
+                    </p>
+
+                    <div className="mt-auto pt-6 text-xs uppercase tracking-widest text-gray-400 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                      Our Focus
+                    </div>
                   </div>
-                  <h3 className="text-lg font-bold mb-4 tracking-tight">{benefit.title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed font-light">{benefit.description}</p>
                 </div>
               )
             })}
@@ -586,89 +664,98 @@ const handleSubmit = async (e: React.FormEvent) => {
       {/* Section Divider */}
       <div className="relative h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-1"></div>
 
-      {/* Our Work / Case Studies */}
-      <section id="our-work" ref={caseStudiesRef} className="py-32 px-6 lg:px-8 bg-white relative">
+      {/* Our Work / Process Section (Replaces Case Studies) */}
+      <section id="our-work" ref={caseStudiesRef} className="py-32 px-6 lg:px-8 bg-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <h2 
-            className={`text-5xl font-bold text-center mb-20 tracking-tight transition-all duration-1000 ${
-              visibleSections.has('caseStudies') 
-                ? 'animate-fade-in-up opacity-100 translate-y-0' 
-                : 'opacity-0 translate-y-12'
-            }`}
-            style={{ transitionDelay: '0ms' }}
-          >
-            OUR WORK
-          </h2>
-          
-          <div 
-            className={`text-center transition-all duration-1000 ${
-              visibleSections.has('caseStudies') 
-                ? 'animate-fade-in-up opacity-100 translate-y-0' 
-                : 'opacity-0 translate-y-12'
-            }`}
-            style={{ transitionDelay: '200ms' }}
-          >
-            <div className="max-w-4xl mx-auto">
-              {/* Main Message */}
-              <div className="bg-gradient-to-r from-gray-100 to-gray-50 rounded-3xl p-16 border border-gray-200 mb-12">
-                <div className="text-6xl font-bold text-gray-800 mb-6">
-                  🚧
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-6">
-                  We Are Still Working!
-                </h3>
-                <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                  Amazing projects and case studies are coming soon. We're currently building 
-                  exceptional work that we can't wait to share with you.
-                </p>
-              </div>
+          <div className="text-center mb-20">
+            <h2 
+              className={`text-4xl lg:text-6xl font-bold mb-6 tracking-tight transition-all duration-700 ${
+                visibleSections.has('caseStudies') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }`}
+            >
+              FROM STRATEGY TO SCALE
+            </h2>
+            <p 
+              className={`text-xl text-gray-600 max-w-3xl mx-auto font-light leading-relaxed transition-all duration-700 delay-100 ${
+                visibleSections.has('caseStudies') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }`}
+            >
+              We don't rely on guesswork. Every campaign follows our proven 4-step framework 
+              designed to maximize ROI and brand alignment.
+            </p>
+          </div>
 
-              {/* Call to Action */}
-              <div className="bg-gradient-to-r from-black to-gray-800 rounded-3xl p-12 border border-gray-900">
-                <h4 className="text-2xl font-bold text-white mb-4">
-                  Let's Connect
-                </h4>
-                <p className="text-gray-300 mb-8 leading-relaxed">
-                  Be the first to know when we launch our portfolio. Get exclusive insights 
-                  and early access to our case studies.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <button 
-                    onClick={createRipple}
-                    onMouseMove={handleMouseMove}
-                    onMouseLeave={handleMouseLeave}
-                    className="relative px-8 py-4 bg-white text-black font-medium rounded-full transition-all duration-500 transform overflow-hidden group hover:scale-105"
-                    style={{
-                      transform: `translate(${magneticButton.x}px, ${magneticButton.y}px)`
-                    }}
-                  >
-                    <span className="relative z-10 flex items-center">
-                      Get Notified
-                      <ChevronRight className="w-4 h-4 ml-2 transition-transform duration-30 group-hover:translate-x-1" />
-                    </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-200 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                    {ripples.map(ripple => (
-                      <span
-                        key={ripple.id}
-                        className="absolute bg-black/20 rounded-full animate-ripple"
-                        style={{
-                          left: ripple.x - 10,
-                          top: ripple.y - 10,
-                          width: 20,
-                          height: 20
-                        }}
-                      />
-                    ))}
-                  </button>
-                  <a 
-                    href="mailto:mountliftagency@gmail.com"
-                    className="px-8 py-4 border border-gray-600 text-white font-medium rounded-full hover:bg-gray-600 hover:text-white transition-all duration-300 hover:scale-105"
-                  >
-                    Email Us
-                  </a>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+            {/* Connecting Line (Desktop) */}
+            <div className="hidden lg:block absolute top-12 left-0 w-full h-0.5 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 -z-10"></div>
+
+            {[
+              {
+                step: "01",
+                title: "Discovery & Strategy",
+                desc: "We dive deep into your brand DNA, audience demographics, and campaign goals to craft a bespoke roadmap.",
+                icon: Target
+              },
+              {
+                step: "02",
+                title: "Curated Matching",
+                desc: "Using data-driven insights, we identify and vet creators who perfectly align with your brand's voice and values.",
+                icon: Users
+              },
+              {
+                step: "03",
+                title: "Creative Activation",
+                desc: "We manage the entire workflow, ensuring content is authentic, high-quality, and delivered on schedule.",
+                icon: Zap
+              },
+              {
+                step: "04",
+                title: "Analysis & Scale",
+                desc: "Real-time monitoring allows us to optimize performance live and scale what works for maximum impact.",
+                icon: TrendingUp
+              }
+            ].map((item, index) => (
+              <div 
+                key={index}
+                className={`relative bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-500 group ${
+                  visibleSections.has('caseStudies') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                }`}
+                style={{ transitionDelay: `${index * 150}ms` }}
+              >
+                {/* Step Number Badge */}
+                <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center font-bold text-lg mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-black/20 relative z-10">
+                  {item.step}
                 </div>
+                
+                <h3 className="text-xl font-bold mb-4 group-hover:text-gray-700 transition-colors">
+                  {item.title}
+                </h3>
+                
+                <p className="text-gray-600 leading-relaxed text-sm">
+                  {item.desc}
+                </p>
+
+                {/* Subtle Hover Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl -z-10"></div>
               </div>
-            </div>
+            ))}
+          </div>
+
+          {/* Call to Action */}
+          <div 
+            className={`mt-20 text-center transition-all duration-1000 delay-500 ${
+              visibleSections.has('caseStudies') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}
+          >
+             <div className="inline-block p-1 rounded-full bg-gray-100">
+               <a 
+                 href="mailto:mountliftagency@gmail.com"
+                 className="px-8 py-4 bg-black text-white font-medium rounded-full hover:bg-gray-800 transition-all duration-300 inline-flex items-center gap-2 group"
+               >
+                 Start Your Campaign
+                 <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+               </a>
+             </div>
           </div>
         </div>
       </section>
@@ -764,9 +851,13 @@ const handleSubmit = async (e: React.FormEvent) => {
           </div>
 
           <div className="text-center mt-16">
-            <button className="px-8 py-4 bg-black text-white font-medium rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+            {/* UPDATED BUTTON: Now links to #contact */}
+            <Link 
+              href="#contact"
+              className="inline-block px-8 py-4 bg-black text-white font-medium rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+            >
               Become a Partner
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -898,32 +989,6 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* CTA Section */}
-          <div className="mt-20 text-center">
-            <div 
-              className="bg-gradient-to-r from-gray-100 to-gray-50 rounded-3xl p-12 border border-gray-200"
-              style={{
-                opacity: visibleSections.has('tools') ? 1 : 0,
-                transform: visibleSections.has('tools') ? 'translateY(0)' : 'translateY(40px)',
-                transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s'
-              }}
-            >
-              <h3 className="text-3xl font-bold mb-4">Ready to Level Up Your Creator Game?</h3>
-              <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-                Join thousands of creators who use our tools to grow their audience, 
-                increase engagement, and monetize their content effectively.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="px-8 py-4 bg-black text-white font-medium rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
-                  Start Free Trial
-                </button>
-                <button className="px-8 py-4 border border-gray-300 font-medium rounded-full hover:bg-gray-50 transition-all duration-300">
-                  View All Tools
-                </button>
-              </div>
             </div>
           </div>
         </div>

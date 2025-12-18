@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { ArrowLeft, Target, Users, TrendingUp, Award, Lightbulb, Globe, Heart, Shield, Zap, Instagram, Linkedin } from 'lucide-react'
+import { ArrowLeft, Target, Users, TrendingUp, Award, Lightbulb, Globe, Heart, Shield, Zap, Instagram, Linkedin, Sparkles, BarChart3, Link as LinkIcon } from 'lucide-react'
 import Link from 'next/link'
 
 export default function AboutUs() {
@@ -85,12 +85,12 @@ export default function AboutUs() {
     {
       title: 'Strategic Planning',
       description: 'Comprehensive campaign development with clear objectives and KPIs',
-      stats: '500+ Campaigns'
+      stats: '10+ Campaigns'
     },
     {
       title: 'Creator Matching',
       description: 'AI-powered matching algorithm to find perfect brand-creator partnerships',
-      stats: '10,000+ Creators'
+      stats: '100+ Creators'
     },
     {
       title: 'Performance Tracking',
@@ -100,7 +100,7 @@ export default function AboutUs() {
     {
       title: 'Content Excellence',
       description: 'Quality assurance and creative direction for compelling content',
-      stats: '50M+ Reach Generated'
+      stats: '1k+ Reach Generated'
     }
   ]
 
@@ -193,6 +193,7 @@ export default function AboutUs() {
       <section ref={missionRef} className="py-20 px-6 lg:px-8 bg-gray-50 relative overflow-hidden">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left: Text Content */}
             <div>
               <h2 
                 className="text-4xl lg:text-5xl font-bold mb-8 tracking-tight"
@@ -225,29 +226,104 @@ export default function AboutUs() {
                 </p>
               </div>
             </div>
+
+            {/* Right: DNA / Hub Visualization */}
             <div 
-              className="relative"
+              className="relative h-[500px]"
               style={{
                 opacity: visibleSections.has('mission') ? 1 : 0,
                 transform: visibleSections.has('mission') ? 'translateY(0)' : 'translateY(40px)',
                 transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s'
               }}
             >
-              <div className="bg-gradient-to-br from-gray-100 to-gray-50 rounded-3xl p-16 border border-gray-200">
-                <div className="text-center">
-                  <div className="text-6xl font-bold text-gray-800 mb-6">
-                    🚧
-                  </div>
-                  <h3 className="text-3xl font-bold text-gray-900 mb-6">
-                    We Are Still Working!
-                  </h3>
-                  <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                    Our team is actively building amazing things and we can't wait 
-                    to share our progress with you soon.
-                  </p>
-                  <div className="text-lg text-gray-700 font-medium">
-                    We Want To Connect With You!
-                  </div>
+              <div className="absolute inset-0 bg-white rounded-3xl border border-gray-100 shadow-2xl overflow-hidden flex items-center justify-center p-8">
+                {/* Decorative Background Grid */}
+                <div className="absolute inset-0 opacity-[0.03]" 
+                  style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, black 1px, transparent 0)', backgroundSize: '30px 30px' }}>
+                </div>
+                
+                {/* Connecting "DNA" Strands (SVG Lines) - FIXED */}
+                <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
+                  <defs>
+                    <linearGradient id="strandGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#9ca3af" /> {/* Gray 400 */}
+                      <stop offset="50%" stopColor="#6b7280" /> {/* Gray 500 */}
+                      <stop offset="100%" stopColor="#9ca3af" />
+                    </linearGradient>
+                  </defs>
+                  
+                  {/* Strand to Top Left Card */}
+                  <path 
+                    d="M 50 50 Q 35 50 20 25" 
+                    fill="none" 
+                    stroke="#cbd5e1" 
+                    strokeWidth="0.5" 
+                    strokeDasharray="2 2"
+                    className="opacity-70"
+                  />
+                  
+                  {/* Strand to Top Right Card */}
+                  <path 
+                    d="M 50 50 Q 65 50 80 30" 
+                    fill="none" 
+                    stroke="#cbd5e1" 
+                    strokeWidth="0.5" 
+                    strokeDasharray="2 2" 
+                    className="opacity-70"
+                  />
+                  
+                  {/* Strand to Bottom Center Card */}
+                  <path 
+                    d="M 50 50 Q 50 70 50 85" 
+                    fill="none" 
+                    stroke="#cbd5e1" 
+                    strokeWidth="0.5" 
+                    strokeDasharray="2 2" 
+                    className="opacity-70"
+                  />
+                </svg>
+
+                {/* Central Bullseye / Nucleus */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+                   <div className="relative flex items-center justify-center w-20 h-20 bg-black rounded-full shadow-2xl shadow-black/20 ring-4 ring-white">
+                      <Target className="w-8 h-8 text-white" />
+                      {/* Pulse Rings */}
+                      <div className="absolute inset-0 rounded-full border border-gray-400 scale-150 animate-ping opacity-20"></div>
+                      <div className="absolute inset-0 rounded-full border border-gray-300 scale-125 opacity-30"></div>
+                   </div>
+                </div>
+
+                {/* Orbiting Card 1 (Top Left) - Connection */}
+                <div className="absolute top-[15%] left-[5%] sm:left-[5%] bg-white p-4 rounded-xl shadow-lg border border-gray-100 flex items-center gap-3 animate-float-slow z-30 max-w-[180px] sm:max-w-none">
+                   <div className="w-10 h-10 bg-indigo-50 rounded-full flex shrink-0 items-center justify-center text-indigo-600">
+                     <LinkIcon size={20} />
+                   </div>
+                   <div>
+                     <div className="text-xs text-gray-400 font-medium tracking-wide">FOCUS</div>
+                     <div className="font-bold text-sm">Authentic Connection</div>
+                   </div>
+                </div>
+
+                {/* Orbiting Card 2 (Top Right) - Strategy */}
+                <div className="absolute top-[20%] right-[5%] sm:right-[5%] bg-white p-4 rounded-xl shadow-lg border border-gray-100 flex items-center gap-3 animate-float-delayed z-30 max-w-[180px] sm:max-w-none">
+                   <div className="w-10 h-10 bg-blue-50 rounded-full flex shrink-0 items-center justify-center text-blue-600">
+                     <BarChart3 size={20} />
+                   </div>
+                   <div>
+                     <div className="text-xs text-gray-400 font-medium tracking-wide">INSIGHT</div>
+                     <div className="font-bold text-sm">Data-Driven Strategy</div>
+                   </div>
+                </div>
+
+                {/* Orbiting Card 3 (Bottom Center) - Creativity */}
+                <div className="absolute bottom-[10%] left-1/2 transform -translate-x-1/2 bg-white p-4 rounded-xl shadow-lg border border-gray-100 flex items-center gap-3 animate-float z-30 w-max">
+                   <div className="w-10 h-10 bg-pink-50 rounded-full flex shrink-0 items-center justify-center text-pink-600">
+                     <Sparkles size={20} />
+                   </div>
+                   <div>
+                     <div className="text-xs text-gray-400 font-medium tracking-wide">STYLE</div>
+                     <div className="font-bold text-sm">Creative Storytelling</div>
+                   </div>
                 </div>
               </div>
             </div>
@@ -446,6 +522,106 @@ export default function AboutUs() {
           </div>
         </div>
       </section>
+
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          33% {
+            transform: translateY(-15px) rotate(1deg);
+          }
+          66% {
+            transform: translateY(8px) rotate(-1deg);
+          }
+        }
+
+        @keyframes float-slow {
+          0%, 100% {
+            transform: translateY(0px) translateX(0px);
+          }
+          25% {
+            transform: translateY(-20px) translateX(8px);
+          }
+          50% {
+            transform: translateY(8px) translateX(-8px);
+          }
+          75% {
+            transform: translateY(-8px) translateX(12px);
+          }
+        }
+
+        @keyframes float-delayed {
+          0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          33% {
+            transform: translateY(-12px) rotate(1deg);
+          }
+          66% {
+            transform: translateY(6px) rotate(-1deg);
+          }
+        }
+
+        .animate-float {
+          animation: float 8s ease-in-out infinite;
+        }
+
+        .animate-float-slow {
+          animation: float-slow 12s ease-in-out infinite;
+        }
+
+        .animate-float-delayed {
+          animation: float-delayed 10s ease-in-out infinite;
+          animation-delay: 3s;
+        }
+        
+        .floating-element-slow {
+          animation: float-slow 12s ease-in-out infinite;
+        }
+        
+        .floating-element-delayed {
+          animation: float-delayed 10s ease-in-out infinite;
+          animation-delay: 2s;
+        }
+
+        /* Glossy bubble styles */
+        .glossy-bubble {
+          background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.9) 0%, 
+            rgba(240, 240, 240, 0.8) 25%, 
+            rgba(220, 220, 220, 0.7) 50%, 
+            rgba(200, 200, 200, 0.6) 75%, 
+            rgba(180, 180, 180, 0.5) 100%);
+          border-radius: 50%;
+          box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 2px 4px rgba(255, 255, 255, 0.8),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .glossy-bubble-lg {
+          background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.85) 0%, 
+            rgba(235, 235, 235, 0.75) 25%, 
+            rgba(215, 215, 215, 0.65) 50%, 
+            rgba(195, 195, 195, 0.55) 75%, 
+            rgba(175, 175, 175, 0.45) 100%);
+          border-radius: 50%;
+          box-shadow: 
+            0 12px 40px rgba(0, 0, 0, 0.12),
+            inset 0 3px 6px rgba(255, 255, 255, 0.7),
+            inset 0 -3px 6px rgba(0, 0, 0, 0.12);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .animation-delay-500 {
+          animation-delay: 0.5s;
+        }
+      `}</style>
     </div>
   )
 }
