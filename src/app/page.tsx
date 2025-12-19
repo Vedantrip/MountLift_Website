@@ -236,7 +236,6 @@ boundaries.`,
     }
   ]
 
-  // UPDATED: Only the 6 requested tools
   const creatorTools = [
     {
       title: 'Engagement Rate Calculator',
@@ -444,20 +443,22 @@ boundaries.`,
             MountLift is a data-driven influencer marketing agency that connects premium brands 
             with authentic creators to drive measurable results and meaningful engagement.
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          
+          {/* RESPONSIVE BUTTON (UPDATED: Only one button now) */}
+          <div className="flex justify-center px-4 sm:px-0 w-full sm:w-auto">
             <a 
               href="mailto:mountliftagency@gmail.com?subject=Book a Campaign Call"
               ref={ctaButtonRef}
               onClick={createRipple}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
-              className="relative inline-block px-12 py-5 bg-black text-white font-medium rounded-full transition-all duration-500 transform overflow-hidden group"
+              className="relative inline-block w-full sm:w-auto px-8 py-4 md:px-12 md:py-5 bg-black text-white font-medium rounded-full transition-all duration-500 transform overflow-hidden group text-center"
               style={{
                 transform: `translate(${magneticButton.x}px, ${magneticButton.y}px) scale(${visibleSections.has('hero') ? 1 : 0.95})`,
                 transition: 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease'
               }}
             >
-              <span className="relative z-10 flex items-center">
+              <span className="relative z-10 flex items-center justify-center">
                 Book a Campaign Call
                 <ChevronRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
               </span>
@@ -475,15 +476,6 @@ boundaries.`,
                 />
               ))}
             </a>
-            <button 
-              className="px-12 py-5 border border-gray-800 font-light hover:bg-gray-800 hover:text-white transition-all duration-500 transform hover:scale-105 hover:shadow-lg"
-              style={{
-                transform: `scale(${visibleSections.has('hero') ? 1 : 0.95})`,
-                transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s'
-              }}
-            >
-              For Creators
-            </button>
           </div>
         </div>
       </section>
@@ -491,7 +483,7 @@ boundaries.`,
       {/* Section Divider */}
       <div className="relative h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-1"></div>
 
-      {/* Key Benefits Cards (Redesigned - Slide Up Drawer) */}
+      {/* Key Benefits Cards (Slide Up Drawer) */}
       <section
         id="benefits"
         ref={benefitsRef}
@@ -520,33 +512,28 @@ boundaries.`,
                   key={index}
                   className="group relative h-[420px] bg-white rounded-[2rem] border border-gray-100 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:border-gray-200"
                 >
-                  {/* Ambient Background Glow */}
                   <div 
                     className={`absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-br ${benefit.color} opacity-0 group-hover:opacity-5 blur-[80px] transition-opacity duration-700 pointer-events-none rounded-full translate-x-1/3 -translate-y-1/3`} 
                   />
 
-                  {/* --- MAIN CARD CONTENT (Visible Default) --- */}
+                  {/* Main Content */}
                   <div className="absolute inset-0 p-8 flex flex-col h-full z-10">
                     <div className="mb-auto">
-                      {/* Icon Container */}
                       <div 
                         className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${benefit.color} flex items-center justify-center mb-8 shadow-sm group-hover:scale-90 group-hover:shadow-md transition-all duration-500`}
                       >
                         <Icon className="w-8 h-8 text-white" />
                       </div>
                       
-                      {/* Title */}
                       <h3 className="text-2xl font-bold tracking-tight text-gray-900 mb-4 pr-4">
                         {benefit.title}
                       </h3>
                       
-                      {/* Short Description */}
                       <p className="text-gray-500 text-sm leading-relaxed font-light group-hover:opacity-20 transition-opacity duration-500">
                         {benefit.short}
                       </p>
                     </div>
 
-                    {/* Footer Label */}
                     <div className="pt-6 border-t border-gray-50 mt-auto group-hover:opacity-20 transition-opacity duration-500">
                       <div className="text-xs font-bold uppercase tracking-widest text-gray-300">
                         Our Focus
@@ -554,7 +541,7 @@ boundaries.`,
                     </div>
                   </div>
 
-                  {/* --- SLIDE-UP DRAWER (Visible on Hover) --- */}
+                  {/* Slide-Up Drawer */}
                   <div className="absolute inset-0 bg-white/95 backdrop-blur-xl p-8 flex flex-col justify-center translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] z-20">
                     <div className="mb-6 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
                       <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${benefit.color} flex items-center justify-center`}>
@@ -579,7 +566,7 @@ boundaries.`,
       {/* Section Divider */}
       <div className="relative h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-1"></div>
 
-      {/* Our Work / Campaign Roadmap (Replaced Case Studies) */}
+      {/* Our Work / Campaign Roadmap */}
       <section id="our-work" ref={caseStudiesRef} className="py-32 px-6 lg:px-8 bg-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
@@ -601,7 +588,6 @@ boundaries.`,
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
-            {/* Connecting Line (Desktop) */}
             <div className="hidden lg:block absolute top-12 left-0 w-full h-0.5 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 -z-10"></div>
 
             {[
@@ -637,7 +623,6 @@ boundaries.`,
                 }`}
                 style={{ transitionDelay: `${index * 150}ms` }}
               >
-                {/* Step Number Badge */}
                 <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center font-bold text-lg mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-black/20 relative z-10">
                   {item.step}
                 </div>
@@ -650,13 +635,11 @@ boundaries.`,
                   {item.desc}
                 </p>
 
-                {/* Subtle Hover Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl -z-10"></div>
               </div>
             ))}
           </div>
 
-          {/* Call to Action */}
           <div 
             className={`mt-20 text-center transition-all duration-1000 delay-500 ${
               visibleSections.has('caseStudies') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
@@ -680,20 +663,6 @@ boundaries.`,
 
       {/* Exclusive Representation Section */}
       <section id="exclusive-representation" ref={exclusiveRef} className="py-32 px-6 lg:px-8 bg-gray-50 relative overflow-hidden">
-        {/* Floating decorative elements */}
-        <div 
-          className="absolute top-20 left-10 w-24 h-24 glossy-bubble floating-element" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.2}px) translateX(${Math.sin(scrollY * 0.01) * 15}px)` 
-          }}
-        ></div>
-        <div 
-          className="absolute bottom-16 right-20 w-32 h-32 glossy-bubble-lg floating-element-slow" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.3}px) translateX(${Math.cos(scrollY * 0.01) * 20}px)` 
-          }}
-        ></div>
-
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-20">
             <h2 
@@ -781,22 +750,7 @@ boundaries.`,
 
       {/* Tools for Creators Section */}
       <section id="tools" ref={toolsRef} className="py-32 px-6 lg:px-8 bg-white relative overflow-hidden">
-        {/* Floating decorative elements */}
-        <div 
-          className="absolute top-20 left-10 w-24 h-24 glossy-bubble floating-element" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.2}px) translateX(${Math.sin(scrollY * 0.01) * 15}px)` 
-          }}
-        ></div>
-        <div 
-          className="absolute bottom-16 right-20 w-32 h-32 glossy-bubble-lg floating-element-slow" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.3}px) translateX(${Math.cos(scrollY * 0.01) * 20}px)` 
-          }}
-        ></div>
-
         <div className="max-w-7xl mx-auto">
-          {/* Section Header */}
           <div className="text-center mb-20">
             <h2 
               className="text-4xl lg:text-6xl font-bold mb-6 tracking-tight"
@@ -821,7 +775,6 @@ boundaries.`,
             </p>
           </div>
 
-          {/* Tools Grid - Updated for 6 items */}
           <div className="mb-16">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {creatorTools.map((tool, index) => (
@@ -834,7 +787,6 @@ boundaries.`,
                     transition: `all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${0.3 + index * 0.1}s`
                   }}
                 >
-                  {/* Background gradient */}
                   <div className={`absolute inset-0 bg-gradient-to-br ${tool.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
                   
                   <div className="relative z-10">
@@ -868,7 +820,6 @@ boundaries.`,
             </div>
           </div>
 
-          {/* CTA Section */}
           <div className="mt-20 text-center">
             <div 
               className="bg-gradient-to-r from-gray-100 to-gray-50 rounded-3xl p-12 border border-gray-200"
@@ -917,27 +868,8 @@ boundaries.`,
             transform: `translateY(${scrollY * 0.25}px) translateX(${Math.sin(scrollY * 0.008) * 18}px)` 
           }}
         ></div>
-        <div 
-          className="absolute bottom-40 right-10 w-12 h-12 glossy-bubble floating-element" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.18}px) translateX(${Math.cos(scrollY * 0.012) * 10}px)` 
-          }}
-        ></div>
-        <div 
-          className="absolute top-60 left-1/4 w-16 h-16 glossy-bubble-sm floating-element" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.22}px) translateX(${Math.sin(scrollY * 0.009) * 14}px)` 
-          }}
-        ></div>
-        <div 
-          className="absolute bottom-40 right-1/3 w-20 h-20 glossy-bubble-lg floating-element-slow" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.12}px) translateX(${Math.cos(scrollY * 0.011) * 16}px)` 
-          }}
-        ></div>
         
         <div className="max-w-4xl mx-auto relative z-10">
-          {/* Social Media */}
           <div 
             className={`text-center mb-24 transition-all duration-1000 ${
               visibleSections.has('contact') 
@@ -969,7 +901,6 @@ boundaries.`,
             </div>
           </div>
 
-          {/* Contact Form */}
           <div 
             className={`text-center transition-all duration-1000 ${
               visibleSections.has('contact') 
@@ -1031,42 +962,42 @@ boundaries.`,
       </section>
 
       {showPopup && (
-  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-    <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl animate-fade-in-up">
-      
-      {status === 'success' && (
-        <>
-          <h3 className="text-2xl font-bold mb-4 text-green-600">
-            ✅ Thank You!
-          </h3>
-          <p className="text-gray-600 mb-6">
-            Your message was sent successfully.  
-            We’ll get back to you shortly.
-          </p>
-        </>
-      )}
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl animate-fade-in-up">
+            
+            {status === 'success' && (
+              <>
+                <h3 className="text-2xl font-bold mb-4 text-green-600">
+                  ✅ Thank You!
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Your message was sent successfully.  
+                  We’ll get back to you shortly.
+                </p>
+              </>
+            )}
 
-      {status === 'error' && (
-        <>
-          <h3 className="text-2xl font-bold mb-4 text-red-600">
-            ❌ Something went wrong
-          </h3>
-          <p className="text-gray-600 mb-6">
-            We couldn’t send your message right now.  
-            Please try again later.
-          </p>
-        </>
-      )}
+            {status === 'error' && (
+              <>
+                <h3 className="text-2xl font-bold mb-4 text-red-600">
+                  ❌ Something went wrong
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  We couldn’t send your message right now.  
+                  Please try again later.
+                </p>
+              </>
+            )}
 
-      <button
-        onClick={() => setShowPopup(false)}
-        className="w-full px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-all duration-300"
-      >
-        Close
-      </button>
-    </div>
-  </div>
-)}
+            <button
+              onClick={() => setShowPopup(false)}
+              className="w-full px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-all duration-300"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="bg-black text-white py-20 px-6 lg:px-8">
@@ -1078,9 +1009,9 @@ boundaries.`,
             </div>
             <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-12">
               <div className="flex space-x-10">
-                <Link href="#" className="text-sm font-light hover:text-white transition-colors duration-300">Privacy</Link>
-                <Link href="#" className="text-sm font-light hover:text-white transition-colors duration-300">Terms</Link>
-                <Link href="#" className="text-sm font-light hover:text-white transition-colors duration-300">Careers</Link>
+                <Link href="/privacy" className="text-sm font-light hover:text-white transition-colors duration-300">Privacy</Link>
+                <Link href="/privacy" className="text-sm font-light hover:text-white transition-colors duration-300">Terms</Link>
+                <Link href="/work-in-progress" className="text-sm font-light hover:text-white transition-colors duration-300">Careers</Link>
               </div>
               <div className="flex space-x-8">
                 <a 
