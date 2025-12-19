@@ -27,8 +27,6 @@ export default function MountLift() {
   const caseStudiesRef = useRef<HTMLDivElement>(null)
   const exclusiveRef = useRef<HTMLDivElement>(null)
   const toolsRef = useRef<HTMLDivElement>(null)
-  const representationRef = useRef<HTMLDivElement>(null)
-  const workRef = useRef<HTMLDivElement>(null)
   const contactRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
   const headlineRef = useRef<HTMLHeadingElement>(null)
@@ -122,32 +120,32 @@ export default function MountLift() {
     }))
   }
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault()
-  setLoading(true)
-  setStatus('idle')
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setStatus('idle')
 
-  try {
-    const res = await fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
 
-    if (!res.ok) throw new Error('Failed')
+      if (!res.ok) throw new Error('Failed')
 
-    setStatus('success')
-    setFormData({ name: '', email: '', phone: '', message: '' })
-  } catch {
-    setStatus('error')
-  } finally {
-    setLoading(false)
-    setShowPopup(true)
+      setStatus('success')
+      setFormData({ name: '', email: '', phone: '', message: '' })
+    } catch {
+      setStatus('error')
+    } finally {
+      setLoading(false)
+      setShowPopup(true)
 
-    // auto close popup after 4 seconds
-    setTimeout(() => setShowPopup(false), 4000)
+      // auto close popup after 4 seconds
+      setTimeout(() => setShowPopup(false), 4000)
+    }
   }
-}
 
   const createRipple = (e: React.MouseEvent<HTMLElement>) => {
     const button = e.currentTarget
@@ -195,156 +193,93 @@ const handleSubmit = async (e: React.FormEvent) => {
     'Contact'
   ]
 
-const benefits = [
-  {
-    title: 'Focused Campaign Design',
-    short: 'Strategic influencer campaigns tailored to your brand.',
-    long: `We design influencer campaigns with a clear objective-first approach.
+  const benefits = [
+    {
+      title: 'Focused Campaign Design',
+      short: 'Strategic influencer campaigns tailored to your brand.',
+      long: `We design influencer campaigns with a clear objective-first approach.
 Every campaign begins with understanding your brand DNA, target audience, and
 conversion goals. From creator selection to content format and publishing
 timelines, each decision is made to maximize relevance, authenticity, and ROI.`,
-    icon: Target,
-    color: 'from-slate-600 to-slate-500'
-  },
-  {
-    title: 'Industry-Specific Expertise',
-    short: 'Deep understanding across multiple verticals.',
-    long: `Our team brings hands-on exposure across fashion, beauty, tech,
+      icon: Target,
+      color: 'from-slate-600 to-slate-500'
+    },
+    {
+      title: 'Industry-Specific Expertise',
+      short: 'Deep understanding across multiple verticals.',
+      long: `Our team brings hands-on exposure across fashion, beauty, tech,
 lifestyle, and emerging consumer brands. This allows us to anticipate trends,
 understand platform nuances, and design campaigns that resonate naturally
 within each industry ecosystem.`,
-    icon: TrendingUp,
-    color: 'from-zinc-600 to-zinc-500'
-  },
-  {
-    title: 'Consumer-Centric & Content-Driven',
-    short: 'Authentic content that drives engagement.',
-    long: `We focus on storytelling that feels organic, not promotional.
+      icon: TrendingUp,
+      color: 'from-zinc-600 to-zinc-500'
+    },
+    {
+      title: 'Consumer-Centric & Content-Driven',
+      short: 'Authentic content that drives engagement.',
+      long: `We focus on storytelling that feels organic, not promotional.
 By aligning creators with audience psychology and platform behavior, we
 ensure content feels native, relatable, and trust-driven — resulting in
 higher engagement and stronger brand recall.`,
-    icon: Lightbulb,
-    color: 'from-stone-600 to-stone-500'
-  },
-  {
-    title: 'Passionate & Top-Tier Team',
-    short: 'A team obsessed with brand growth.',
-    long: `Our team is built around strategists, creator managers, and analysts
+      icon: Lightbulb,
+      color: 'from-stone-600 to-stone-500'
+    },
+    {
+      title: 'Passionate & Top-Tier Team',
+      short: 'A team obsessed with brand growth.',
+      long: `Our team is built around strategists, creator managers, and analysts
 who live and breathe the creator economy. We work as an extension of your brand,
 constantly optimizing campaigns, monitoring performance, and pushing creative
 boundaries.`,
-    icon: Users,
-    color: 'from-neutral-600 to-neutral-500'
-  }
-]
-
-  const caseStudies = [
-    {
-      brand: 'LUXE BEAUTY',
-      description: 'Launched new product line with 15 luxury lifestyle influencers',
-      metrics: '2.3M Reach • 12% Engagement Rate',
-      image: '/api/placeholder/400/300'
-    },
-    {
-      brand: 'TECH FORWARD',
-      description: 'Tech product launch through micro-influencer network',
-      metrics: '1.8M Reach • 8% Conversion Rate',
-      image: '/api/placeholder/400/300'
-    },
-    {
-      brand: 'URBAN STYLE',
-      description: 'Fashion campaign with street style influencers',
-      metrics: '3.1M Reach • 15% Engagement Rate',
-      image: '/api/placeholder/400/300'
+      icon: Users,
+      color: 'from-neutral-600 to-neutral-500'
     }
   ]
 
+  // UPDATED: Only the 6 requested tools
   const creatorTools = [
     {
       title: 'Engagement Rate Calculator',
-      description: 'Calculate your true engagement rate across all platforms to understand your content performance.',
+      description: 'Calculate your true engagement rate across all platforms.',
       icon: Calculator,
       color: 'from-blue-600 to-blue-500',
       category: 'Analytics',
       featured: true
     },
     {
-      title: 'Content Planning Calendar',
-      description: 'Plan and schedule your content strategically with our AI-powered content calendar.',
-      icon: Calendar,
-      color: 'from-purple-600 to-purple-500',
-      category: 'Planning'
-    },
-    {
-      title: 'Media Kit Builder',
-      description: 'Create professional media kits with your stats, demographics, and portfolio.',
-      icon: FileText,
-      color: 'from-green-600 to-green-500',
-      category: 'Professional'
-    },
-    {
-      title: 'Rate Calculator',
-      description: 'Determine your worth with our industry-standard pricing calculator.',
-      icon: DollarSign,
-      color: 'from-yellow-600 to-yellow-500',
-      category: 'Monetization',
-      featured: true
-    },
-    {
       title: 'Hashtag Generator',
-      description: 'Generate trending and relevant hashtags to maximize your content reach.',
+      description: 'Generate trending hashtags to maximize reach.',
       icon: Hash,
       color: 'from-pink-600 to-pink-500',
       category: 'Growth'
     },
     {
-      title: 'Brand Collaboration Finder',
-      description: 'Connect with brands looking for creators like you.',
-      icon: Users,
-      color: 'from-indigo-600 to-indigo-500',
-      category: 'Partnerships'
+      title: 'Rate Calculator',
+      description: 'Determine your worth with industry standards.',
+      icon: DollarSign,
+      color: 'from-yellow-600 to-yellow-500',
+      category: 'Monetization'
     },
     {
-      title: 'Content Performance Analytics',
-      description: 'Deep dive into your content performance with detailed analytics.',
-      icon: Analytics,
-      color: 'from-red-600 to-red-500',
-      category: 'Analytics'
-    },
-    {
-      title: 'Video Editing Tools',
-      description: 'Professional video editing tools and templates for social media.',
-      icon: Video,
-      color: 'from-orange-600 to-orange-500',
-      category: 'Creation'
-    },
-    {
-      title: 'Photo Enhancement Suite',
-      description: 'AI-powered photo editing and enhancement tools.',
-      icon: Camera,
-      color: 'from-teal-600 to-teal-500',
-      category: 'Creation'
-    },
-    {
-      title: 'Competitor Analysis',
-      description: 'Analyze competitor strategies and identify opportunities.',
-      icon: BarChart3,
-      color: 'from-gray-600 to-gray-500',
-      category: 'Analytics'
-    },
-    {
-      title: 'Sponsorship Contract Templates',
-      description: 'Professional contract templates for brand partnerships.',
-      icon: Shield,
-      color: 'from-emerald-600 to-emerald-500',
+      title: 'Media Kit Builder',
+      description: 'Create professional media kits with your stats.',
+      icon: FileText,
+      color: 'from-green-600 to-green-500',
       category: 'Professional'
     },
     {
       title: 'Content Idea Generator',
-      description: 'Never run out of content ideas with our AI-powered generator.',
+      description: 'Never run out of content ideas with AI.',
       icon: Lightbulb,
       color: 'from-amber-600 to-amber-500',
       category: 'Planning'
+    },
+    {
+      title: 'Video Editing Tools',
+      description: 'Professional video templates for social media.',
+      icon: Video,
+      color: 'from-orange-600 to-orange-500',
+      category: 'Creation'
     }
   ]
 
@@ -556,13 +491,12 @@ boundaries.`,
       {/* Section Divider */}
       <div className="relative h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-1"></div>
 
-      {/* Key Benefits Cards */}
+      {/* Key Benefits Cards (Redesigned - Slide Up Drawer) */}
       <section
         id="benefits"
         ref={benefitsRef}
         className="relative min-h-screen px-6 lg:px-8 bg-gray-50 overflow-hidden flex items-center"
       >
-        {/* Grid background */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.05]">
           <div
             className="absolute inset-0"
@@ -576,83 +510,64 @@ boundaries.`,
           />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto w-full">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="relative z-10 max-w-7xl mx-auto w-full py-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {benefits.map((benefit, index) => {
               const Icon = benefit.icon
 
               return (
                 <div
                   key={index}
-                  onMouseEnter={() => setActiveBenefit(index)}
-                  onMouseLeave={() => setActiveBenefit(null)}
-                  className="relative bg-white border border-gray-200 rounded-2xl transition-all duration-500 hover:shadow-xl cursor-pointer"
+                  className="group relative h-[420px] bg-white rounded-[2rem] border border-gray-100 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:border-gray-200"
                 >
-                  {/* MODIFIED: The Popup Box */}
-                  {activeBenefit === index && (
-                    <div className="fixed inset-0 z-[999] flex items-center justify-center pointer-events-none">
-                      {/* 1. Transparent Backdrop (doesn't block mouse) */}
-                      <div className="absolute inset-0 bg-white/20 backdrop-blur-sm transition-opacity duration-300" />
-                      
-                      {/* 2. The Form Sized Box */}
+                  {/* Ambient Background Glow */}
+                  <div 
+                    className={`absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-br ${benefit.color} opacity-0 group-hover:opacity-5 blur-[80px] transition-opacity duration-700 pointer-events-none rounded-full translate-x-1/3 -translate-y-1/3`} 
+                  />
+
+                  {/* --- MAIN CARD CONTENT (Visible Default) --- */}
+                  <div className="absolute inset-0 p-8 flex flex-col h-full z-10">
+                    <div className="mb-auto">
+                      {/* Icon Container */}
                       <div 
-                        className="relative bg-white w-full max-w-md p-8 rounded-3xl shadow-2xl border border-gray-100 transform transition-all duration-300 scale-100 opacity-100"
-                        style={{ animation: 'hero-fade 0.3s ease-out' }}
+                        className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${benefit.color} flex items-center justify-center mb-8 shadow-sm group-hover:scale-90 group-hover:shadow-md transition-all duration-500`}
                       >
-                        <div className="text-center">
-                          {/* Icon */}
-                          <div
-                            className={`mx-auto mb-6 w-16 h-16 rounded-2xl
-                            bg-gradient-to-r ${benefits[activeBenefit].color}
-                            flex items-center justify-center shadow-lg`}
-                          >
-                            {React.createElement(benefits[activeBenefit].icon, {
-                              className: "w-8 h-8 text-white"
-                            })}
-                          </div>
+                        <Icon className="w-8 h-8 text-white" />
+                      </div>
+                      
+                      {/* Title */}
+                      <h3 className="text-2xl font-bold tracking-tight text-gray-900 mb-4 pr-4">
+                        {benefit.title}
+                      </h3>
+                      
+                      {/* Short Description */}
+                      <p className="text-gray-500 text-sm leading-relaxed font-light group-hover:opacity-20 transition-opacity duration-500">
+                        {benefit.short}
+                      </p>
+                    </div>
 
-                          {/* Title */}
-                          <h2 className="text-2xl font-bold mb-4 tracking-tight text-gray-900">
-                            {benefits[activeBenefit].title}
-                          </h2>
-
-                          {/* Description */}
-                          <p className="text-gray-600 leading-relaxed text-sm mb-6">
-                            {benefits[activeBenefit].long}
-                          </p>
-
-                          {/* Footer Hint */}
-                          <div className="pt-4 border-t border-gray-50">
-                            <p className="text-xs uppercase tracking-widest text-gray-400 font-medium">
-                              Move cursor away to close
-                            </p>
-                          </div>
-                        </div>
+                    {/* Footer Label */}
+                    <div className="pt-6 border-t border-gray-50 mt-auto group-hover:opacity-20 transition-opacity duration-500">
+                      <div className="text-xs font-bold uppercase tracking-widest text-gray-300">
+                        Our Focus
                       </div>
                     </div>
-                  )}
+                  </div>
 
-                  {/* Standard Card Inner Content (Visible when inactive) */}
-                  <div className="p-8 h-full flex flex-col justify-between">
-                    <div
-                      className={`w-16 h-16 bg-gradient-to-r ${benefit.color}
-                      rounded-2xl flex items-center justify-center
-                      transition-all duration-500 group-hover:scale-110`}
-                    >
-                      <Icon className="w-8 h-8 text-white" />
+                  {/* --- SLIDE-UP DRAWER (Visible on Hover) --- */}
+                  <div className="absolute inset-0 bg-white/95 backdrop-blur-xl p-8 flex flex-col justify-center translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] z-20">
+                    <div className="mb-6 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                      <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${benefit.color} flex items-center justify-center`}>
+                        <Icon className="w-4 h-4 text-white" />
+                      </div>
+                      <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Deep Dive</h4>
                     </div>
-
-                    <h3 className="text-xl font-bold tracking-tight mt-6">
-                      {benefit.title}
-                    </h3>
-
-                    <p className="mt-6 text-gray-600 text-sm leading-relaxed opacity-0 translate-y-6 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
-                      {benefit.short}
+                    
+                    <p className="text-gray-700 leading-relaxed text-sm mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-150">
+                      {benefit.long}
                     </p>
 
-                    <div className="mt-auto pt-6 text-xs uppercase tracking-widest text-gray-400 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                      Our Focus
-                    </div>
+                    <div className="w-12 h-1 bg-gray-100 rounded-full mb-auto"></div>
                   </div>
                 </div>
               )
@@ -664,7 +579,7 @@ boundaries.`,
       {/* Section Divider */}
       <div className="relative h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-1"></div>
 
-      {/* Our Work / Process Section (Replaces Case Studies) */}
+      {/* Our Work / Campaign Roadmap (Replaced Case Studies) */}
       <section id="our-work" ref={caseStudiesRef} className="py-32 px-6 lg:px-8 bg-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
@@ -851,7 +766,6 @@ boundaries.`,
           </div>
 
           <div className="text-center mt-16">
-            {/* UPDATED BUTTON: Now links to #contact */}
             <Link 
               href="#contact"
               className="inline-block px-8 py-4 bg-black text-white font-medium rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
@@ -866,7 +780,7 @@ boundaries.`,
       <div className="relative h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-1"></div>
 
       {/* Tools for Creators Section */}
-      <section ref={toolsRef} className="py-32 px-6 lg:px-8 bg-white relative overflow-hidden">
+      <section id="tools" ref={toolsRef} className="py-32 px-6 lg:px-8 bg-white relative overflow-hidden">
         {/* Floating decorative elements */}
         <div 
           className="absolute top-20 left-10 w-24 h-24 glossy-bubble floating-element" 
@@ -903,18 +817,17 @@ boundaries.`,
               }}
             >
               Empower your creative journey with our comprehensive suite of professional tools. 
-              From analytics to content planning, we've got everything you need to succeed.
+              Everything you need to grow, monetize, and succeed.
             </p>
           </div>
 
-          {/* Featured Tools */}
+          {/* Tools Grid - Updated for 6 items */}
           <div className="mb-16">
-            <h3 className="text-2xl font-semibold mb-8 text-center">Featured Tools</h3>
-            <div className="grid md:grid-cols-2 gap-8">
-              {creatorTools.filter(tool => tool.featured).map((tool, index) => (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {creatorTools.map((tool, index) => (
                 <div
                   key={index}
-                  className="group relative bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden"
+                  className="group relative bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden h-full flex flex-col justify-between"
                   style={{
                     opacity: visibleSections.has('tools') ? 1 : 0,
                     transform: visibleSections.has('tools') ? 'translateY(0)' : 'translateY(40px)',
@@ -933,62 +846,48 @@ boundaries.`,
                       {tool.title}
                     </h4>
                     
-                    <p className="text-gray-600 mb-6 leading-relaxed">
+                    <p className="text-gray-600 mb-6 leading-relaxed text-sm">
                       {tool.description}
                     </p>
+                  </div>
                     
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                        {tool.category}
-                      </span>
-                      <Link
+                  <div className="relative z-10 flex items-center justify-between mt-auto pt-4 border-t border-gray-100/50">
+                    <span className="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                      {tool.category}
+                    </span>
+                    <Link
                       href="/work-in-progress"
-                      className="flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-black group"
-                      >
-                        <span>Try Now</span>
-                        <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                      </Link>
-                    </div>
+                      className="flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-black group-hover:translate-x-1 transition-all"
+                    >
+                      <span>Try Now</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </Link>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* All Tools Grid */}
-          <div>
-            <h3 className="text-2xl font-semibold mb-8 text-center">All Creator Tools</h3>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {creatorTools.map((tool, index) => (
-                <div
-                  key={index}
-                  className="group bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-                  style={{
-                    opacity: visibleSections.has('tools') ? 1 : 0,
-                    transform: visibleSections.has('tools') ? 'translateY(0)' : 'translateY(30px)',
-                    transition: `all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${0.5 + index * 0.05}s`
-                  }}
-                >
-                  <div className={`w-12 h-12 bg-gradient-to-br ${tool.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                    <tool.icon className="w-6 h-6 text-white" />
-                  </div>
-                  
-                  <h4 className="text-lg font-semibold mb-2 group-hover:text-gray-700 transition-colors">
-                    {tool.title}
-                  </h4>
-                  
-                  <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-                    {tool.description}
-                  </p>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
-                      {tool.category}
-                    </span>
-                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-1 transition-all" />
-                  </div>
-                </div>
-              ))}
+          {/* CTA Section */}
+          <div className="mt-20 text-center">
+            <div 
+              className="bg-gradient-to-r from-gray-100 to-gray-50 rounded-3xl p-12 border border-gray-200"
+              style={{
+                opacity: visibleSections.has('tools') ? 1 : 0,
+                transform: visibleSections.has('tools') ? 'translateY(0)' : 'translateY(40px)',
+                transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s'
+              }}
+            >
+              <h3 className="text-3xl font-bold mb-4">Ready to Level Up?</h3>
+              <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+                Join thousands of creators who use our tools to grow their audience, 
+                increase engagement, and monetize effectively.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button className="px-8 py-4 bg-black text-white font-medium rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                  Start Free Trial
+                </button>
+              </div>
             </div>
           </div>
         </div>
