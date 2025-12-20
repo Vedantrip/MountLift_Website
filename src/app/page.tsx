@@ -1,19 +1,23 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { Instagram, Linkedin, Mail, ArrowUpRight, Menu, X, Target, TrendingUp, Lightbulb, Users, ChevronRight, Calculator, Camera, Video, BarChart3, DollarSign, Hash, Calendar, Download, Zap, Globe, Palette, Music, FileText, Star, TrendingUp as Analytics, Shield, Clock, Award } from 'lucide-react'
+import { Instagram, Linkedin, Mail, ArrowUpRight, Menu, X, Target, TrendingUp, Lightbulb, Users, ChevronRight, Calculator, Camera, Video, BarChart3, DollarSign, Hash, Calendar, Download, Zap, Globe, Palette, Music, FileText, Star, TrendingUp as Analytics, Shield, Clock, Award, ChevronDown, MessageCircle, ArrowUp } from 'lucide-react'
 import Link from 'next/link'
 
 export default function MountLift() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set())
+  
+  // Updated State to include Country Code
+  const [countryCode, setCountryCode] = useState('+1')
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     message: ''
   })
+
   const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([])
   const [headlineOpacity, setHeadlineOpacity] = useState(1)
   const [scrollY, setScrollY] = useState(0)
@@ -21,6 +25,12 @@ export default function MountLift() {
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [activeBenefit, setActiveBenefit] = useState<number | null>(null)
+  
+  // NEW: Scroll to top state
+  const [showScrollTop, setShowScrollTop] = useState(false)
+  
+  // FAQ state
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null)
 
   const benefitsRef = useRef<HTMLDivElement>(null)
   const [showPopup, setShowPopup] = useState(false)
@@ -31,16 +41,69 @@ export default function MountLift() {
   const heroRef = useRef<HTMLDivElement>(null)
   const headlineRef = useRef<HTMLHeadingElement>(null)
   const ctaButtonRef = useRef<HTMLAnchorElement>(null)
+  const faqRef = useRef<HTMLDivElement>(null)
 
-  // Accent color - subtle neutral tone
-  const accentColor = '#6B7280'
-  const accentHover = '#4B5563'
+  // Accent color - vibrant professional palette
+  const accentColor = '#6366F1' // Indigo-500
+  const accentHover = '#4F46E5' // Indigo-600
+
+  // List of common country codes with flags
+  const countryCodes = [
+    { code: '+1', country: '🇺🇸/🇨🇦 US/CA' },
+    { code: '+7', country: '🇷🇺/🇰🇿 RU/KZ' },
+    { code: '+20', country: '🇪🇬 EG' },
+    { code: '+27', country: '🇿🇦 ZA' },
+    { code: '+30', country: '🇬🇷 GR' },
+    { code: '+31', country: '🇳🇱 NL' },
+    { code: '+32', country: '🇧🇪 BE' },
+    { code: '+33', country: '🇫🇷 FR' },
+    { code: '+34', country: '🇪🇸 ES' },
+    { code: '+39', country: '🇮🇹 IT' },
+    { code: '+40', country: '🇷🇴 RO' },
+    { code: '+41', country: '🇨🇭 CH' },
+    { code: '+44', country: '🇬🇧 UK' },
+    { code: '+49', country: '🇩🇪 DE' },
+    { code: '+52', country: '🇲🇽 MX' },
+    { code: '+55', country: '🇧🇷 BR' },
+    { code: '+60', country: '🇲🇾 MY' },
+    { code: '+61', country: '🇦🇺 AU' },
+    { code: '+62', country: '🇮🇩 ID' },
+    { code: '+63', country: '🇵🇭 PH' },
+    { code: '+64', country: '🇳🇿 NZ' },
+    { code: '+65', country: '🇸🇬 SG' },
+    { code: '+66', country: '🇹🇭 TH' },
+    { code: '+81', country: '🇯🇵 JP' },
+    { code: '+82', country: '🇰🇷 KR' },
+    { code: '+84', country: '🇻🇳 VN' },
+    { code: '+86', country: '🇨🇳 CN' },
+    { code: '+90', country: '🇹🇷 TR' },
+    { code: '+91', country: '🇮🇳 IN' },
+    { code: '+92', country: '🇵🇰 PK' },
+    { code: '+94', country: '🇱🇰 LK' },
+    { code: '+95', country: '🇲🇲 MM' },
+    { code: '+98', country: '🇮🇷 IR' },
+    { code: '+212', country: '🇲🇦 MA' },
+    { code: '+234', country: '🇳🇬 NG' },
+    { code: '+254', country: '🇰🇪 KE' },
+    { code: '+351', country: '🇵🇹 PT' },
+    { code: '+353', country: '🇮🇪 IE' },
+    { code: '+358', country: '🇫🇮 FI' },
+    { code: '+380', country: '🇺🇦 UA' },
+    { code: '+420', country: '🇨🇿 CZ' },
+    { code: '+48', country: '🇵🇱 PL' },
+    { code: '+852', country: '🇭🇰 HK' },
+    { code: '+886', country: '🇹🇼 TW' },
+    { code: '+966', country: '🇸🇦 SA' },
+    { code: '+971', country: '🇦🇪 UAE' },
+    { code: '+972', country: '🇮🇱 IL' },
+  ].sort((a, b) => parseInt(a.code.replace('+', '')) - parseInt(b.code.replace('+', '')))
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
       setIsScrolled(currentScrollY > 20)
       setScrollY(currentScrollY)
+      setShowScrollTop(currentScrollY > 500)
       
       // Check which sections are visible
       const sections = [
@@ -48,7 +111,8 @@ export default function MountLift() {
         { ref: caseStudiesRef, id: 'caseStudies' },
         { ref: exclusiveRef, id: 'exclusive' },
         { ref: toolsRef, id: 'tools' },
-        { ref: contactRef, id: 'contact' }
+        { ref: contactRef, id: 'contact' },
+        { ref: faqRef, id: 'faq' }
       ]
 
       sections.forEach(({ ref, id }) => {
@@ -113,10 +177,28 @@ export default function MountLift() {
     }
   }, [])
 
+  // Strict Validation Handler
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+
+    // Name: Only allow letters and spaces
+    if (name === 'name') {
+      const lettersOnly = value.replace(/[^a-zA-Z\s]/g, '')
+      setFormData(prev => ({ ...prev, [name]: lettersOnly }))
+      return
+    }
+
+    // Phone: Only allow numbers
+    if (name === 'phone') {
+      const numbersOnly = value.replace(/\D/g, '')
+      setFormData(prev => ({ ...prev, [name]: numbersOnly }))
+      return
+    }
+
+    // Default handler for email and message
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }))
   }
 
@@ -125,11 +207,17 @@ export default function MountLift() {
     setLoading(true)
     setStatus('idle')
 
+    // Combine country code and phone for submission
+    const finalData = {
+      ...formData,
+      phone: `${countryCode} ${formData.phone}`
+    }
+
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(finalData)
       })
 
       if (!res.ok) throw new Error('Failed')
@@ -202,7 +290,7 @@ Every campaign begins with understanding your brand DNA, target audience, and
 conversion goals. From creator selection to content format and publishing
 timelines, each decision is made to maximize relevance, authenticity, and ROI.`,
       icon: Target,
-      color: 'from-slate-600 to-slate-500'
+      color: 'from-indigo-600 to-indigo-500'
     },
     {
       title: 'Industry-Specific Expertise',
@@ -212,7 +300,7 @@ lifestyle, and emerging consumer brands. This allows us to anticipate trends,
 understand platform nuances, and design campaigns that resonate naturally
 within each industry ecosystem.`,
       icon: TrendingUp,
-      color: 'from-zinc-600 to-zinc-500'
+      color: 'from-violet-600 to-violet-500'
     },
     {
       title: 'Consumer-Centric & Content-Driven',
@@ -222,7 +310,7 @@ By aligning creators with audience psychology and platform behavior, we
 ensure content feels native, relatable, and trust-driven — resulting in
 higher engagement and stronger brand recall.`,
       icon: Lightbulb,
-      color: 'from-stone-600 to-stone-500'
+      color: 'from-orange-600 to-orange-500'
     },
     {
       title: 'Passionate & Top-Tier Team',
@@ -232,7 +320,7 @@ who live and breathe the creator economy. We work as an extension of your brand,
 constantly optimizing campaigns, monitoring performance, and pushing creative
 boundaries.`,
       icon: Users,
-      color: 'from-neutral-600 to-neutral-500'
+      color: 'from-cyan-600 to-cyan-500'
     }
   ]
 
@@ -241,7 +329,7 @@ boundaries.`,
       title: 'Engagement Rate Calculator',
       description: 'Calculate your true engagement rate across all platforms.',
       icon: Calculator,
-      color: 'from-blue-600 to-blue-500',
+      color: 'from-indigo-600 to-indigo-500',
       category: 'Analytics',
       featured: true
     },
@@ -256,28 +344,28 @@ boundaries.`,
       title: 'Rate Calculator',
       description: 'Determine your worth with industry standards.',
       icon: DollarSign,
-      color: 'from-yellow-600 to-yellow-500',
+      color: 'from-orange-600 to-orange-500',
       category: 'Monetization'
     },
     {
       title: 'Media Kit Builder',
       description: 'Create professional media kits with your stats.',
       icon: FileText,
-      color: 'from-green-600 to-green-500',
+      color: 'from-emerald-600 to-emerald-500',
       category: 'Professional'
     },
     {
       title: 'Content Idea Generator',
       description: 'Never run out of content ideas with AI.',
       icon: Lightbulb,
-      color: 'from-amber-600 to-amber-500',
+      color: 'from-violet-600 to-violet-500',
       category: 'Planning'
     },
     {
       title: 'Video Editing Tools',
       description: 'Professional video templates for social media.',
       icon: Video,
-      color: 'from-orange-600 to-orange-500',
+      color: 'from-cyan-600 to-cyan-500',
       category: 'Creation'
     }
   ]
@@ -309,7 +397,7 @@ boundaries.`,
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-24">
             {/* Logo */}
-            <Link href="/" className="text-2xl font-bold tracking-tight transition-all duration-300 hover:tracking-wider hover:text-gray-700">
+            <Link href="/" className="text-2xl font-bold tracking-tight transition-all duration-300 hover:tracking-wider bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-500 bg-clip-text text-transparent hover:from-indigo-700 hover:via-violet-700 hover:to-pink-600">
               MOUNTLIFT
             </Link>
 
@@ -327,11 +415,11 @@ boundaries.`,
                     item === 'Contact' ? '#contact' : '#'
                   }
                   className="relative text-sm font-light tracking-wide transition-all duration-300 group"
-                  onMouseEnter={(e) => e.currentTarget.style.color = accentHover}
+                  onMouseEnter={(e) => e.currentTarget.style.color = accentColor}
                   onMouseLeave={(e) => e.currentTarget.style.color = ''}
                 >
                   {item}
-                  <span className="absolute bottom-0 left-1/2 w-0 h-px bg-gradient-to-r from-transparent via-gray-500 to-transparent transition-all duration-500 group-hover:w-full transform -translate-x-1/2"></span>
+                  <span className="absolute bottom-0 left-1/2 w-0 h-px bg-gradient-to-r from-transparent via-indigo-500 to-transparent transition-all duration-500 group-hover:w-full transform -translate-x-1/2"></span>
                 </Link>
               ))}
             </div>
@@ -375,45 +463,22 @@ boundaries.`,
       <section id="influencer-marketing" ref={heroRef} className="min-h-screen flex items-center justify-center px-6 lg:px-8 pt-24 relative bg-white overflow-hidden">
         {/* Gradient Blur Background */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-black opacity-3 blur-[100px] rounded-full"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-indigo-500/10 via-violet-500/10 to-pink-500/10 blur-[100px] rounded-full"></div>
+          <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-cyan-500/5 blur-[80px] rounded-full"></div>
         </div>
 
-        {/* Glossy Floating Bubbles with enhanced parallax */}
+        {/* Glossy Floating Bubbles */}
         <div 
           className="absolute top-20 left-10 w-32 h-32 glossy-bubble floating-element-slow" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.3}px) translateX(${Math.sin(scrollY * 0.01) * 20}px)` 
-          }}
+          style={{ transform: `translateY(${scrollY * 0.3}px)` }}
         ></div>
         <div 
           className="absolute top-40 right-20 w-24 h-24 glossy-bubble-lg floating-element-delayed" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.2}px) translateX(${Math.cos(scrollY * 0.01) * 15}px)` 
-          }}
+          style={{ transform: `translateY(${scrollY * 0.2}px)` }}
         ></div>
         <div 
           className="absolute bottom-32 left-20 w-40 h-40 glossy-bubble floating-element" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.4}px) translateX(${Math.sin(scrollY * 0.008) * 25}px)` 
-          }}
-        ></div>
-        <div 
-          className="absolute bottom-20 right-10 w-20 h-20 glossy-bubble-sm floating-element-slow" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.25}px) translateX(${Math.cos(scrollY * 0.012) * 18}px)` 
-          }}
-        ></div>
-        <div 
-          className="absolute top-60 left-1/4 w-16 h-16 glossy-bubble floating-element-delayed" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.35}px) translateX(${Math.sin(scrollY * 0.009) * 22}px)` 
-          }}
-        ></div>
-        <div 
-          className="absolute bottom-40 right-1/3 w-28 h-28 glossy-bubble-lg floating-element" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.15}px) translateX(${Math.cos(scrollY * 0.011) * 20}px)` 
-          }}
+          style={{ transform: `translateY(${scrollY * 0.4}px)` }}
         ></div>
 
         <div className="max-w-5xl mx-auto text-center relative z-10">
@@ -444,7 +509,7 @@ boundaries.`,
             with authentic creators to drive measurable results and meaningful engagement.
           </p>
           
-          {/* RESPONSIVE BUTTON (UPDATED: Only one button now) */}
+          {/* RESPONSIVE BUTTON */}
           <div className="flex justify-center px-4 sm:px-0 w-full sm:w-auto">
             <a 
               href="mailto:mountliftagency@gmail.com?subject=Book a Campaign Call"
@@ -452,7 +517,7 @@ boundaries.`,
               onClick={createRipple}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
-              className="relative inline-block w-full sm:w-auto px-8 py-4 md:px-12 md:py-5 bg-black text-white font-medium rounded-full transition-all duration-500 transform overflow-hidden group text-center"
+              className="relative inline-block w-full sm:w-auto px-8 py-4 md:px-12 md:py-5 bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 text-white font-medium rounded-full transition-all duration-500 transform overflow-hidden group text-center shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40"
               style={{
                 transform: `translate(${magneticButton.x}px, ${magneticButton.y}px) scale(${visibleSections.has('hero') ? 1 : 0.95})`,
                 transition: 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease'
@@ -462,7 +527,7 @@ boundaries.`,
                 Book a Campaign Call
                 <ChevronRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
               </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
               {ripples.map(ripple => (
                 <span
                   key={ripple.id}
@@ -480,10 +545,31 @@ boundaries.`,
         </div>
       </section>
 
+      {/* NEW: Platform Marquee Section */}
+      <section className="py-10 bg-white border-b border-gray-100 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <p className="text-center text-sm font-medium text-gray-400 mb-8 tracking-widest uppercase">
+            Optimized for all major platforms
+          </p>
+          <div className="relative flex overflow-x-hidden group">
+            <div className="flex animate-marquee whitespace-nowrap gap-16 items-center">
+              {[1, 2, 3, 4].map((i) => (
+                <React.Fragment key={i}>
+                  <span className="text-2xl font-bold text-gray-300 flex items-center gap-2"><Instagram className="w-6 h-6"/> Instagram</span>
+                  <span className="text-2xl font-bold text-gray-300 flex items-center gap-2"><Music className="w-6 h-6"/> TikTok</span>
+                  <span className="text-2xl font-bold text-gray-300 flex items-center gap-2"><Video className="w-6 h-6"/> YouTube</span>
+                  <span className="text-2xl font-bold text-gray-300 flex items-center gap-2"><Linkedin className="w-6 h-6"/> LinkedIn</span>
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Section Divider */}
       <div className="relative h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-1"></div>
 
-      {/* Key Benefits Cards (Slide Up Drawer) */}
+      {/* Key Benefits Cards */}
       <section
         id="benefits"
         ref={benefitsRef}
@@ -571,7 +657,7 @@ boundaries.`,
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
             <h2 
-              className={`text-4xl lg:text-6xl font-bold mb-6 tracking-tight transition-all duration-700 ${
+              className={`text-4xl lg:text-6xl font-bold mb-6 tracking-tight transition-all duration-700 bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent ${
                 visibleSections.has('caseStudies') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
               }`}
             >
@@ -623,7 +709,7 @@ boundaries.`,
                 }`}
                 style={{ transitionDelay: `${index * 150}ms` }}
               >
-                <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center font-bold text-lg mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-black/20 relative z-10">
+                <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-violet-600 text-white rounded-xl flex items-center justify-center font-bold text-lg mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-indigo-500/30 relative z-10">
                   {item.step}
                 </div>
                 
@@ -645,10 +731,10 @@ boundaries.`,
               visibleSections.has('caseStudies') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
           >
-             <div className="inline-block p-1 rounded-full bg-gray-100">
+             <div className="inline-block p-1 rounded-full bg-gradient-to-r from-indigo-100 via-violet-100 to-pink-100">
                <a 
                  href="mailto:mountliftagency@gmail.com"
-                 className="px-8 py-4 bg-black text-white font-medium rounded-full hover:bg-gray-800 transition-all duration-300 inline-flex items-center gap-2 group"
+                 className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium rounded-full hover:from-indigo-700 hover:to-violet-700 transition-all duration-300 inline-flex items-center gap-2 group shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40"
                >
                  Start Your Campaign
                  <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
@@ -666,7 +752,7 @@ boundaries.`,
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-20">
             <h2 
-              className="text-4xl lg:text-6xl font-bold mb-6 tracking-tight"
+              className="text-4xl lg:text-6xl font-bold mb-6 tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent"
               style={{
                 opacity: visibleSections.has('exclusive') ? 1 : 0,
                 transform: visibleSections.has('exclusive') ? 'translateY(0)' : 'translateY(30px)',
@@ -696,7 +782,7 @@ boundaries.`,
                 transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s'
               }}
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-500 rounded-2xl flex items-center justify-center mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-violet-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-violet-500/30">
                 <Users className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-4">Talent Management</h3>
@@ -711,7 +797,7 @@ boundaries.`,
                 transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s'
               }}
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl flex items-center justify-center mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/30">
                 <Target className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-4">Brand Partnerships</h3>
@@ -726,7 +812,7 @@ boundaries.`,
                 transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s'
               }}
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-green-500 rounded-2xl flex items-center justify-center mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-emerald-600 to-emerald-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30">
                 <TrendingUp className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-4">Growth Strategy</h3>
@@ -737,7 +823,7 @@ boundaries.`,
           <div className="text-center mt-16">
             <Link 
               href="#contact"
-              className="inline-block px-8 py-4 bg-black text-white font-medium rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+              className="inline-block px-8 py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium rounded-full hover:from-indigo-700 hover:to-violet-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-lg shadow-indigo-500/30"
             >
               Become a Partner
             </Link>
@@ -753,7 +839,7 @@ boundaries.`,
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
             <h2 
-              className="text-4xl lg:text-6xl font-bold mb-6 tracking-tight"
+              className="text-4xl lg:text-6xl font-bold mb-6 tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent"
               style={{
                 opacity: visibleSections.has('tools') ? 1 : 0,
                 transform: visibleSections.has('tools') ? 'translateY(0)' : 'translateY(30px)',
@@ -835,11 +921,92 @@ boundaries.`,
                 increase engagement, and monetize effectively.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="px-8 py-4 bg-black text-white font-medium rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                <button className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium rounded-full hover:from-indigo-700 hover:to-violet-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-lg shadow-indigo-500/30">
                   Start Free Trial
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* NEW: FAQ Section */}
+      <section ref={faqRef} className="py-24 px-6 lg:px-8 bg-white border-t border-gray-100 relative overflow-hidden">
+        {/* Decorative gradient background */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-500 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="max-w-3xl mx-auto relative z-10">
+          <h2 
+            className="text-4xl font-bold text-center mb-12 tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent"
+            style={{
+              opacity: visibleSections.has('faq') ? 1 : 0,
+              transform: visibleSections.has('faq') ? 'translateY(0)' : 'translateY(30px)',
+              transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0ms'
+            }}
+          >
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-4">
+            {[
+              { q: "What industries do you specialize in?", a: "We primarily focus on Fashion, Beauty, Lifestyle, and Tech, but our data-driven approach allows us to adapt to any niche effectively." },
+              { q: "Do you work with micro or macro influencers?", a: "We work with a full spectrum of creators. We believe in a mix: macro for awareness and micro/nano for high engagement and conversion." },
+              { q: "How do you measure campaign success?", a: "We look beyond vanity metrics (likes). We track CPM, CPA, conversion rates, and sentiment analysis to ensure real ROI." },
+              { q: "What is the typical campaign timeline?", a: "From strategy to execution, a typical campaign takes 4-6 weeks. However, we can expedite this based on your specific launch needs." }
+            ].map((faq, i) => (
+              <div
+                key={i}
+                className="group"
+                style={{
+                  opacity: visibleSections.has('faq') ? 1 : 0,
+                  transform: visibleSections.has('faq') ? 'translateY(0)' : 'translateY(40px)',
+                  transition: `all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${0.2 + i * 0.1}s`
+                }}
+              >
+                <div
+                  onClick={() => setOpenFAQ(openFAQ === i ? null : i)}
+                  className={`
+                    border rounded-2xl p-6 cursor-pointer transition-all duration-500 ease-out
+                    ${openFAQ === i 
+                      ? 'border-indigo-300 bg-gradient-to-br from-indigo-50/50 via-violet-50/30 to-pink-50/50 shadow-lg shadow-indigo-500/10' 
+                      : 'border-gray-200 bg-white hover:border-indigo-200 hover:shadow-md hover:shadow-indigo-500/5'
+                    }
+                  `}
+                >
+                  <div className="flex justify-between items-center">
+                    <h3 className={`
+                      font-semibold text-lg pr-8 transition-colors duration-300
+                      ${openFAQ === i ? 'text-indigo-700' : 'text-gray-900 group-hover:text-indigo-600'}
+                    `}>
+                      {faq.q}
+                    </h3>
+                    <div className={`
+                      flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-500
+                      ${openFAQ === i 
+                        ? 'bg-gradient-to-br from-indigo-500 to-violet-500 text-white rotate-180 shadow-lg shadow-indigo-500/30' 
+                        : 'bg-gray-100 text-gray-400 group-hover:bg-indigo-50 group-hover:text-indigo-600'
+                      }
+                    `}>
+                      <ChevronDown className="w-5 h-5 transition-transform duration-500" />
+                    </div>
+                  </div>
+                  <div
+                    className={`
+                      overflow-hidden transition-all duration-500 ease-out
+                      ${openFAQ === i ? 'max-h-96 mt-4 opacity-100' : 'max-h-0 mt-0 opacity-0'}
+                    `}
+                  >
+                    <div className="pt-4 border-t border-gray-100">
+                      <p className="text-gray-600 leading-relaxed text-sm">
+                        {faq.a}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -849,26 +1016,6 @@ boundaries.`,
 
       {/* Social Media & Contact */}
       <section id="contact" ref={contactRef} className="py-32 px-6 lg:px-8 bg-gray-100 relative overflow-hidden">
-        {/* Floating decorative elements */}
-        <div 
-          className="absolute top-10 left-10 w-20 h-20 glossy-bubble floating-element" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.2}px) translateX(${Math.sin(scrollY * 0.01) * 15}px)` 
-          }}
-        ></div>
-        <div 
-          className="absolute top-32 right-20 w-16 h-16 glossy-bubble-sm floating-element-slow" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.15}px) translateX(${Math.cos(scrollY * 0.01) * 12}px)` 
-          }}
-        ></div>
-        <div 
-          className="absolute bottom-20 left-32 w-24 h-24 glossy-bubble-lg floating-element-delayed" 
-          style={{ 
-            transform: `translateY(${scrollY * 0.25}px) translateX(${Math.sin(scrollY * 0.008) * 18}px)` 
-          }}
-        ></div>
-        
         <div className="max-w-4xl mx-auto relative z-10">
           <div 
             className={`text-center mb-24 transition-all duration-1000 ${
@@ -878,7 +1025,7 @@ boundaries.`,
             }`}
             style={{ transitionDelay: '0ms' }}
           >
-            <h2 className="text-4xl font-bold mb-12 tracking-tight">Our Social Media Handles</h2>
+            <h2 className="text-4xl font-bold mb-12 tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent">Our Social Media Handles</h2>
             <div className="flex justify-center space-x-10">
               <a
                 href="https://www.instagram.com/mount.lift/"
@@ -901,6 +1048,7 @@ boundaries.`,
             </div>
           </div>
 
+          {/* UPDATED CONTACT FORM */}
           <div 
             className={`text-center transition-all duration-1000 ${
               visibleSections.has('contact') 
@@ -909,53 +1057,77 @@ boundaries.`,
             }`}
             style={{ transitionDelay: '200ms' }}
           >
-            <h2 className="text-4xl font-bold mb-6 tracking-tight">Contact</h2>
+            <h2 className="text-4xl font-bold mb-6 tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent">Contact</h2>
             <p className="text-gray-600 mb-16 font-light tracking-wide">Reach out to us if you need any support.</p>
             
             <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* NAME INPUT: Letters only */}
                 <input
                   type="text"
                   name="name"
                   placeholder="Name"
                   value={formData.name}
                   onChange={handleFormChange}
-                  className="w-full px-6 py-4 bg-white border border-gray-200 focus:border-gray-600 focus:outline-none transition-all duration-500 focus:ring-2 focus:ring-gray-600/20 font-light"
+                  className="w-full px-6 py-4 bg-white border border-gray-200 focus:border-indigo-500 focus:outline-none transition-all duration-500 focus:ring-2 focus:ring-indigo-500/20 font-light rounded-xl"
                   required
                 />
+                
+                {/* EMAIL INPUT: Standard email validation */}
                 <input
                   type="email"
                   name="email"
                   placeholder="Email"
                   value={formData.email}
                   onChange={handleFormChange}
-                  className="w-full px-6 py-4 bg-white border border-gray-200 focus:border-gray-600 focus:outline-none transition-all duration-500 focus:ring-2 focus:ring-gray-600/20 font-light"
+                  className="w-full px-6 py-4 bg-white border border-gray-200 focus:border-indigo-500 focus:outline-none transition-all duration-500 focus:ring-2 focus:ring-indigo-500/20 font-light rounded-xl"
                   required
                 />
               </div>
-              <input
-                type="tel"
-                name="phone"
-                placeholder="Phone Number"
-                value={formData.phone}
-                onChange={handleFormChange}
-                className="w-full px-6 py-4 bg-white border border-gray-200 focus:border-gray-600 focus:outline-none transition-all duration-500 focus:ring-2 focus:ring-gray-600/20 font-light"
-              />
+
+              {/* PHONE INPUT: Country Code Dropdown + Numbers only */}
+              <div className="flex gap-4">
+                <div className="relative">
+                  <select
+                    value={countryCode}
+                    onChange={(e) => setCountryCode(e.target.value)}
+                    className="h-full px-4 py-4 bg-white border border-gray-200 focus:border-indigo-500 focus:outline-none appearance-none pr-8 cursor-pointer font-light min-w-[140px] rounded-xl"
+                  >
+                    {countryCodes.map((c) => (
+                      <option key={c.code} value={c.code}>
+                        {c.code} {c.country.split(' ')[0]}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                </div>
+                
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="Phone Number"
+                  value={formData.phone}
+                  onChange={handleFormChange}
+                  className="flex-1 px-6 py-4 bg-white border border-gray-200 focus:border-indigo-500 focus:outline-none transition-all duration-500 focus:ring-2 focus:ring-indigo-500/20 font-light rounded-xl"
+                />
+              </div>
+
               <textarea
                 name="message"
                 placeholder="Message"
                 value={formData.message}
                 onChange={handleFormChange}
                 rows={6}
-                className="w-full px-6 py-4 bg-white border border-gray-200 focus:border-gray-600 focus:outline-none transition-all duration-500 focus:ring-2 focus:ring-gray-600/20 resize-none font-light"
+                className="w-full px-6 py-4 bg-white border border-gray-200 focus:border-indigo-500 focus:outline-none transition-all duration-500 focus:ring-2 focus:ring-indigo-500/20 resize-none font-light rounded-xl"
                 required
               />
               <button
-              type="submit"
-              disabled={loading}
-              className="w-full md:w-auto px-12 py-5 bg-black text-white font-medium transition-all duration-300 hover:bg-gray-800 disabled:opacity-60 disabled:cursor-not-allowed">
+                type="submit"
+                disabled={loading}
+                className="w-full md:w-auto px-12 py-5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium transition-all duration-300 hover:from-indigo-700 hover:to-violet-700 disabled:opacity-60 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/30 rounded-full"
+              >
                 {loading ? 'Sending...' : 'Send Message'}
-                </button>
+              </button>
             </form>
           </div>
         </div>
@@ -964,34 +1136,21 @@ boundaries.`,
       {showPopup && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl animate-fade-in-up">
-            
             {status === 'success' && (
               <>
-                <h3 className="text-2xl font-bold mb-4 text-green-600">
-                  ✅ Thank You!
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Your message was sent successfully.  
-                  We’ll get back to you shortly.
-                </p>
+                <h3 className="text-2xl font-bold mb-4 text-green-600">✅ Thank You!</h3>
+                <p className="text-gray-600 mb-6">Your message was sent successfully. We’ll get back to you shortly.</p>
               </>
             )}
-
             {status === 'error' && (
               <>
-                <h3 className="text-2xl font-bold mb-4 text-red-600">
-                  ❌ Something went wrong
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  We couldn’t send your message right now.  
-                  Please try again later.
-                </p>
+                <h3 className="text-2xl font-bold mb-4 text-red-600">❌ Something went wrong</h3>
+                <p className="text-gray-600 mb-6">We couldn’t send your message right now. Please try again later.</p>
               </>
             )}
-
             <button
               onClick={() => setShowPopup(false)}
-              className="w-full px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-all duration-300"
+              className="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-full hover:from-indigo-700 hover:to-violet-700 transition-all duration-300 shadow-lg shadow-indigo-500/30"
             >
               Close
             </button>
@@ -999,26 +1158,34 @@ boundaries.`,
         </div>
       )}
 
+      {/* NEW: Scroll to Top Button */}
+      <button 
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className={`fixed bottom-8 right-8 p-4 bg-indigo-600 text-white rounded-full shadow-2xl transition-all duration-300 z-50 hover:bg-indigo-700 hover:scale-110 ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
+      >
+        <ArrowUp className="w-6 h-6" />
+      </button>
+
       {/* Footer */}
-      <footer className="bg-black text-white py-20 px-6 lg:px-8">
+      <footer className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white py-20 px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-8 md:mb-0">
-              <div className="text-2xl font-bold mb-4 tracking-tight">MOUNTLIFT</div>
-              <p className="text-sm text-gray-400 font-light tracking-wide">Elevating brands through authentic influencer partnerships</p>
+              <div className="text-2xl font-bold mb-4 tracking-tight bg-gradient-to-r from-indigo-400 via-violet-400 to-pink-400 bg-clip-text text-transparent">MOUNTLIFT</div>
+              <p className="text-sm text-gray-300 font-light tracking-wide">Elevating brands through authentic influencer partnerships</p>
             </div>
             <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-12">
               <div className="flex space-x-10">
                 <Link href="/privacy" className="text-sm font-light hover:text-white transition-colors duration-300">Privacy</Link>
-                <Link href="/privacy" className="text-sm font-light hover:text-white transition-colors duration-300">Terms</Link>
-                <Link href="/work-in-progress" className="text-sm font-light hover:text-white transition-colors duration-300">Careers</Link>
+                <Link href="#" className="text-sm font-light hover:text-white transition-colors duration-300">Terms</Link>
+                <Link href="#" className="text-sm font-light hover:text-white transition-colors duration-300">Careers</Link>
               </div>
               <div className="flex space-x-8">
                 <a 
                   href="https://www.instagram.com/mount.lift/" 
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 border border-white/20 rounded-full hover:bg-white hover:text-black transition-all duration-300 hover:scale-110"
+                  className="p-3 border border-white/20 rounded-full hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:border-transparent transition-all duration-300 hover:scale-110"
                 >
                   <Instagram className="w-5 h-5" />
                 </a>
@@ -1026,7 +1193,7 @@ boundaries.`,
                   href="https://www.linkedin.com/company/mountlift-agency/" 
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 border border-white/20 rounded-full hover:bg-white hover:text-black transition-all duration-300 hover:scale-110"
+                  className="p-3 border border-white/20 rounded-full hover:bg-indigo-600 hover:border-transparent transition-all duration-300 hover:scale-110"
                 >
                   <Linkedin className="w-5 h-5" />
                 </a>
@@ -1038,221 +1205,85 @@ boundaries.`,
 
       <style jsx>{`
         @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(40px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes hero-slide {
-          from {
-            opacity: 0;
-            transform: translateY(5%);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(5%); }
+          to { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes hero-fade {
-          from {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
         }
-
         @keyframes card-enter {
-          from {
-            opacity: 0;
-            transform: translateY(40px) rotate(2deg);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) rotate(0.5deg);
-          }
+          from { opacity: 0; transform: translateY(40px) rotate(2deg); }
+          to { opacity: 1; transform: translateY(0) rotate(0.5deg); }
         }
-
         @keyframes float {
-          0%, 100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          33% {
-            transform: translateY(-15px) rotate(1deg);
-          }
-          66% {
-            transform: translateY(8px) rotate(-1deg);
-          }
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          33% { transform: translateY(-15px) rotate(1deg); }
+          66% { transform: translateY(8px) rotate(-1deg); }
         }
-
         @keyframes float-slow {
-          0%, 100% {
-            transform: translateY(0px) translateX(0px);
-          }
-          25% {
-            transform: translateY(-20px) translateX(8px);
-          }
-          50% {
-            transform: translateY(8px) translateX(-8px);
-          }
-          75% {
-            transform: translateY(-8px) translateX(12px);
-          }
+          0%, 100% { transform: translateY(0px) translateX(0px); }
+          25% { transform: translateY(-20px) translateX(8px); }
+          50% { transform: translateY(8px) translateX(-8px); }
+          75% { transform: translateY(-8px) translateX(12px); }
         }
-
         @keyframes float-delayed {
-          0%, 100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          33% {
-            transform: translateY(-12px) rotate(1deg);
-          }
-          66% {
-            transform: translateY(6px) rotate(-1deg);
-          }
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          33% { transform: translateY(-12px) rotate(1deg); }
+          66% { transform: translateY(6px) rotate(-1deg); }
         }
-
         @keyframes ripple {
-          0% {
-            width: 0;
-            height: 0;
-            opacity: 0.5;
-          }
-          100% {
-            width: 100px;
-            height: 100px;
-            opacity: 0;
-          }
+          0% { width: 0; height: 0; opacity: 0.5; }
+          100% { width: 100px; height: 100px; opacity: 0; }
         }
-
-        .animate-fade-in-up {
-          animation: fade-in-up 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
-
-        .animate-hero-slide {
-          animation: hero-slide 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        .animate-marquee {
+          animation: marquee 20s linear infinite;
         }
-
-        .animate-hero-fade {
-          animation: hero-fade 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-
-        .animate-card-enter {
-          animation: card-enter 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-
-        .animate-ripple {
-          animation: ripple 0.6s ease-out forwards;
-        }
-
-        .floating-element {
-          animation: float 8s ease-in-out infinite;
-        }
-
-        .floating-element-slow {
-          animation: float-slow 12s ease-in-out infinite;
-        }
-
-        .floating-element-delayed {
-          animation: float-delayed 10s ease-in-out infinite;
-          animation-delay: 3s;
-        }
-
-        /* Glossy bubble styles */
+        .animate-fade-in-up { animation: fade-in-up 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        .animate-hero-slide { animation: hero-slide 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        .animate-hero-fade { animation: hero-fade 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        .animate-card-enter { animation: card-enter 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        .animate-ripple { animation: ripple 0.6s ease-out forwards; }
+        .floating-element { animation: float 8s ease-in-out infinite; }
+        .floating-element-slow { animation: float-slow 12s ease-in-out infinite; }
+        .floating-element-delayed { animation: float-delayed 10s ease-in-out infinite; animation-delay: 3s; }
         .glossy-bubble {
-          background: linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.9) 0%, 
-            rgba(240, 240, 240, 0.8) 25%, 
-            rgba(220, 220, 220, 0.7) 50%, 
-            rgba(200, 200, 200, 0.6) 75%, 
-            rgba(180, 180, 180, 0.5) 100%);
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 240, 240, 0.8) 25%, rgba(220, 220, 220, 0.7) 50%, rgba(200, 200, 200, 0.6) 75%, rgba(180, 180, 180, 0.5) 100%);
           border-radius: 50%;
-          box-shadow: 
-            0 8px 32px rgba(0, 0, 0, 0.1),
-            inset 0 2px 4px rgba(255, 255, 255, 0.8),
-            inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(255, 255, 255, 0.8), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
           backdrop-filter: blur(10px);
           border: 1px solid rgba(255, 255, 255, 0.3);
         }
-
         .glossy-bubble-sm {
-          background: linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.95) 0%, 
-            rgba(245, 245, 245, 0.85) 25%, 
-            rgba(230, 230, 230, 0.75) 50%, 
-            rgba(210, 210, 210, 0.65) 75%, 
-            rgba(190, 190, 190, 0.55) 100%);
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 245, 245, 0.85) 25%, rgba(230, 230, 230, 0.75) 50%, rgba(210, 210, 210, 0.65) 75%, rgba(190, 190, 190, 0.55) 100%);
           border-radius: 50%;
-          box-shadow: 
-            0 6px 24px rgba(0, 0, 0, 0.08),
-            inset 0 2px 3px rgba(255, 255, 255, 0.9),
-            inset 0 -2px 3px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08), inset 0 2px 3px rgba(255, 255, 255, 0.9), inset 0 -2px 3px rgba(0, 0, 0, 0.08);
           backdrop-filter: blur(8px);
           border: 1px solid rgba(255, 255, 255, 0.4);
         }
-
         .glossy-bubble-lg {
-          background: linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.85) 0%, 
-            rgba(235, 235, 235, 0.75) 25%, 
-            rgba(215, 215, 215, 0.65) 50%, 
-            rgba(195, 195, 195, 0.55) 75%, 
-            rgba(175, 175, 175, 0.45) 100%);
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(235, 235, 235, 0.75) 25%, rgba(215, 215, 215, 0.65) 50%, rgba(195, 195, 195, 0.55) 75%, rgba(175, 175, 175, 0.45) 100%);
           border-radius: 50%;
-          box-shadow: 
-            0 12px 40px rgba(0, 0, 0, 0.12),
-            inset 0 3px 6px rgba(255, 255, 255, 0.7),
-            inset 0 -3px 6px rgba(0, 0, 0, 0.12);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), inset 0 3px 6px rgba(255, 255, 255, 0.7), inset 0 -3px 6px rgba(0, 0, 0, 0.12);
           backdrop-filter: blur(12px);
           border: 1px solid rgba(255, 255, 255, 0.25);
         }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-          width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-          background: #f5f5f5;
-        }
-
-        ::-webkit-scrollbar-thumb {
-          background: #888;
-          border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-          background: #555;
-        }
-
-        /* Smooth scroll behavior */
-        html {
-          scroll-behavior: smooth;
-        }
-
-        /* Selection styling */
-        ::selection {
-          background: black;
-          color: white;
-        }
-
-        ::-moz-selection {
-          background: black;
-          color: white;
-        }
-
-        /* Easing utility */
-        .ease-out-quint {
-          animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f5f5f5; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        html { scroll-behavior: smooth; }
+        ::selection { background: #6366F1; color: white; }
+        ::-moz-selection { background: #6366F1; color: white; }
+        .ease-out-quint { animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94); }
       `}</style>
     </div>
   )

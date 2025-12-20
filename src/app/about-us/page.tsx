@@ -59,25 +59,25 @@ export default function AboutUs() {
       title: 'Authenticity First',
       description: 'We believe in genuine connections between brands and creators, fostering relationships that feel natural and resonate with audiences.',
       icon: Heart,
-      color: 'from-rose-600 to-rose-500'
+      color: 'from-pink-600 to-pink-500'
     },
     {
       title: 'Data-Driven Excellence',
       description: 'Our strategies are backed by comprehensive analytics and insights, ensuring every campaign delivers measurable results.',
       icon: TrendingUp,
-      color: 'from-blue-600 to-blue-500'
+      color: 'from-indigo-600 to-indigo-500'
     },
     {
       title: 'Creative Innovation',
       description: 'We push boundaries with fresh ideas and cutting-edge approaches that capture attention and drive engagement.',
       icon: Lightbulb,
-      color: 'from-yellow-600 to-yellow-500'
+      color: 'from-orange-600 to-orange-500'
     },
     {
       title: 'Partnership Mindset',
       description: 'We view our clients as long-term partners, committed to their growth and success in the evolving digital landscape.',
       icon: Users,
-      color: 'from-green-600 to-green-500'
+      color: 'from-cyan-600 to-cyan-500'
     }
   ]
 
@@ -131,7 +131,7 @@ export default function AboutUs() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-24">
             {/* Logo */}
-            <Link href="/" className="text-2xl font-bold tracking-tight transition-all duration-300 hover:tracking-wider hover:text-gray-700">
+            <Link href="/" className="text-2xl font-bold tracking-tight transition-all duration-300 hover:tracking-wider bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-500 bg-clip-text text-transparent hover:from-indigo-700 hover:via-violet-700 hover:to-pink-600">
               MOUNTLIFT
             </Link>
 
@@ -165,7 +165,7 @@ export default function AboutUs() {
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <h1 
-            className="text-5xl lg:text-7xl font-bold leading-tight mb-6 tracking-tight"
+            className="text-5xl lg:text-7xl font-bold leading-tight mb-6 tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent"
             style={{
               opacity: visibleSections.has('hero') ? 1 : 0,
               transform: visibleSections.has('hero') ? 'translateY(0)' : 'translateY(30px)',
@@ -196,7 +196,7 @@ export default function AboutUs() {
             {/* Left: Text Content */}
             <div>
               <h2 
-                className="text-4xl lg:text-5xl font-bold mb-8 tracking-tight"
+                className="text-4xl lg:text-5xl font-bold mb-8 tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent"
                 style={{
                   opacity: visibleSections.has('mission') ? 1 : 0,
                   transform: visibleSections.has('mission') ? 'translateY(0)' : 'translateY(30px)',
@@ -285,17 +285,17 @@ export default function AboutUs() {
 
                 {/* Central Bullseye / Nucleus */}
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
-                   <div className="relative flex items-center justify-center w-20 h-20 bg-black rounded-full shadow-2xl shadow-black/20 ring-4 ring-white">
+                   <div className="relative flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-full shadow-2xl shadow-indigo-500/30 ring-4 ring-white">
                       <Target className="w-8 h-8 text-white" />
                       {/* Pulse Rings */}
-                      <div className="absolute inset-0 rounded-full border border-gray-400 scale-150 animate-ping opacity-20"></div>
-                      <div className="absolute inset-0 rounded-full border border-gray-300 scale-125 opacity-30"></div>
+                      <div className="absolute inset-0 rounded-full border border-indigo-400 scale-150 animate-ping opacity-20"></div>
+                      <div className="absolute inset-0 rounded-full border border-violet-300 scale-125 opacity-30"></div>
                    </div>
                 </div>
 
                 {/* Orbiting Card 1 (Top Left) - Connection */}
                 <div className="absolute top-[15%] left-[5%] sm:left-[5%] bg-white p-4 rounded-xl shadow-lg border border-gray-100 flex items-center gap-3 animate-float-slow z-30 max-w-[180px] sm:max-w-none">
-                   <div className="w-10 h-10 bg-indigo-50 rounded-full flex shrink-0 items-center justify-center text-indigo-600">
+                   <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-full flex shrink-0 items-center justify-center text-white shadow-lg shadow-indigo-500/30">
                      <LinkIcon size={20} />
                    </div>
                    <div>
@@ -306,7 +306,7 @@ export default function AboutUs() {
 
                 {/* Orbiting Card 2 (Top Right) - Strategy */}
                 <div className="absolute top-[20%] right-[5%] sm:right-[5%] bg-white p-4 rounded-xl shadow-lg border border-gray-100 flex items-center gap-3 animate-float-delayed z-30 max-w-[180px] sm:max-w-none">
-                   <div className="w-10 h-10 bg-blue-50 rounded-full flex shrink-0 items-center justify-center text-blue-600">
+                   <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-violet-600 rounded-full flex shrink-0 items-center justify-center text-white shadow-lg shadow-violet-500/30">
                      <BarChart3 size={20} />
                    </div>
                    <div>
@@ -317,7 +317,7 @@ export default function AboutUs() {
 
                 {/* Orbiting Card 3 (Bottom Center) - Creativity */}
                 <div className="absolute bottom-[10%] left-1/2 transform -translate-x-1/2 bg-white p-4 rounded-xl shadow-lg border border-gray-100 flex items-center gap-3 animate-float z-30 w-max">
-                   <div className="w-10 h-10 bg-pink-50 rounded-full flex shrink-0 items-center justify-center text-pink-600">
+                   <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-pink-600 rounded-full flex shrink-0 items-center justify-center text-white shadow-lg shadow-pink-500/30">
                      <Sparkles size={20} />
                    </div>
                    <div>
@@ -336,7 +336,7 @@ export default function AboutUs() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 
-              className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight"
+              className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent"
               style={{
                 opacity: visibleSections.has('values') ? 1 : 0,
                 transform: visibleSections.has('values') ? 'translateY(0)' : 'translateY(30px)',
@@ -368,7 +368,7 @@ export default function AboutUs() {
                   transition: `all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${0.3 + index * 0.1}s`
                 }}
               >
-                <div className={`w-20 h-20 bg-gradient-to-br ${value.color} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-20 h-20 bg-gradient-to-br ${value.color} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`} style={{ boxShadow: `0 10px 30px -5px ${value.color.includes('indigo') ? 'rgba(99, 102, 241, 0.3)' : value.color.includes('pink') ? 'rgba(236, 72, 153, 0.3)' : value.color.includes('orange') ? 'rgba(249, 115, 22, 0.3)' : 'rgba(6, 182, 212, 0.3)'}` }}>
                   <value.icon className="w-10 h-10 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold mb-4">{value.title}</h3>
@@ -384,7 +384,7 @@ export default function AboutUs() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 
-              className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight"
+              className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent"
               style={{
                 opacity: visibleSections.has('approach') ? 1 : 0,
                 transform: visibleSections.has('approach') ? 'translateY(0)' : 'translateY(30px)',
@@ -436,13 +436,13 @@ export default function AboutUs() {
               transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0ms'
             }}
           >
-            <div className="w-24 h-24 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-8">
+            <div className="w-24 h-24 bg-gradient-to-br from-indigo-600 via-violet-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg shadow-indigo-500/30">
               <Globe className="w-12 h-12 text-white" />
             </div>
           </div>
 
           <h2 
-            className="text-4xl lg:text-5xl font-bold mb-8 tracking-tight"
+            className="text-4xl lg:text-5xl font-bold mb-8 tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent"
             style={{
               opacity: visibleSections.has('team') ? 1 : 0,
               transform: visibleSections.has('team') ? 'translateY(0)' : 'translateY(30px)',
@@ -488,13 +488,13 @@ export default function AboutUs() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <Link 
                 href="/"
-                className="px-8 py-4 bg-black text-white font-medium rounded-full hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 hover:shadow-lg text-center"
+                className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium rounded-full hover:from-indigo-700 hover:to-violet-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-lg shadow-indigo-500/30 text-center"
               >
                 Start a Campaign
               </Link>
               <Link 
                 href="/#tools"
-                className="px-8 py-4 border border-gray-300 font-medium rounded-full hover:bg-gray-50 transition-all duration-300 text-center"
+                className="px-8 py-4 border-2 border-indigo-200 text-indigo-600 font-medium rounded-full hover:bg-indigo-50 transition-all duration-300 text-center"
               >
                 Explore Creator Tools
               </Link>
@@ -513,7 +513,7 @@ export default function AboutUs() {
                 href="https://www.linkedin.com/company/mountlift-agency/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative p-3 rounded-full bg-blue-600 text-white transition-all duration-500 transform hover:scale-110 hover:shadow-xl hover:shadow-blue-500/30 group"
+                className="relative p-3 rounded-full bg-indigo-600 text-white transition-all duration-500 transform hover:scale-110 hover:shadow-xl hover:shadow-indigo-500/30 group"
               >
                 <Linkedin className="w-5 h-5" />
                 <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
