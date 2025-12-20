@@ -23,7 +23,9 @@ export default function MountLift() {
   const [scrollY, setScrollY] = useState(0)
   const [magneticButton, setMagneticButton] = useState({ x: 0, y: 0 })
   const [loading, setLoading] = useState(false)
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  
+  // UPDATED: Added 'validation' status
+  const [status, setStatus] = useState<'idle' | 'success' | 'error' | 'validation'>('idle')
   const [activeBenefit, setActiveBenefit] = useState<number | null>(null)
   
   // NEW: Scroll to top state
@@ -207,6 +209,14 @@ export default function MountLift() {
     setLoading(true)
     setStatus('idle')
 
+    // UPDATED: Strict Phone Length Validation
+    if (formData.phone.length < 10) {
+      setStatus('validation') // Trigger validation error
+      setShowPopup(true)
+      setLoading(false)
+      return
+    }
+
     // Combine country code and phone for submission
     const finalData = {
       ...formData,
@@ -230,8 +240,10 @@ export default function MountLift() {
       setLoading(false)
       setShowPopup(true)
 
-      // auto close popup after 4 seconds
-      setTimeout(() => setShowPopup(false), 4000)
+      // auto close popup after 4 seconds only on success
+      if (status !== 'error' && status !== 'validation') {
+        setTimeout(() => setShowPopup(false), 4000)
+      }
     }
   }
 
@@ -559,6 +571,7 @@ boundaries.`,
                   <span className="text-2xl font-bold text-gray-300 flex items-center gap-2"><Music className="w-6 h-6"/> TikTok</span>
                   <span className="text-2xl font-bold text-gray-300 flex items-center gap-2"><Video className="w-6 h-6"/> YouTube</span>
                   <span className="text-2xl font-bold text-gray-300 flex items-center gap-2"><Linkedin className="w-6 h-6"/> LinkedIn</span>
+                  <span className="text-2xl font-bold text-gray-300 flex items-center gap-2"><MessageCircle className="w-6 h-6"/> Snapchat</span>
                 </React.Fragment>
               ))}
             </div>
@@ -920,8 +933,8 @@ boundaries.`,
                 Join thousands of creators who use our tools to grow their audience, 
                 increase engagement, and monetize effectively.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium rounded-full hover:from-indigo-700 hover:to-violet-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-lg shadow-indigo-500/30">
+              <div className="flex justify-center w-full px-4 sm:px-0">
+                <button className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium rounded-full hover:from-indigo-700 hover:to-violet-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-lg shadow-indigo-500/30">
                   Start Free Trial
                 </button>
               </div>
@@ -1069,6 +1082,7 @@ boundaries.`,
                   placeholder="Name"
                   value={formData.name}
                   onChange={handleFormChange}
+                  minLength={2}
                   className="w-full px-6 py-4 bg-white border border-gray-200 focus:border-indigo-500 focus:outline-none transition-all duration-500 focus:ring-2 focus:ring-indigo-500/20 font-light rounded-xl"
                   required
                 />
@@ -1108,6 +1122,8 @@ boundaries.`,
                   placeholder="Phone Number"
                   value={formData.phone}
                   onChange={handleFormChange}
+                  minLength={10}
+                  maxLength={15}
                   className="flex-1 px-6 py-4 bg-white border border-gray-200 focus:border-indigo-500 focus:outline-none transition-all duration-500 focus:ring-2 focus:ring-indigo-500/20 font-light rounded-xl"
                 />
               </div>
@@ -1146,6 +1162,12 @@ boundaries.`,
               <>
                 <h3 className="text-2xl font-bold mb-4 text-red-600">❌ Something went wrong</h3>
                 <p className="text-gray-600 mb-6">We couldn’t send your message right now. Please try again later.</p>
+              </>
+            )}
+            {status === 'validation' && ( // Added validation error UI
+              <>
+                <h3 className="text-2xl font-bold mb-4 text-orange-600">⚠️ Invalid Input</h3>
+                <p className="text-gray-600 mb-6">Please enter a valid phone number (at least 10 digits).</p>
               </>
             )}
             <button
