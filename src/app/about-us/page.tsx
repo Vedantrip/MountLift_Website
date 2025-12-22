@@ -359,6 +359,97 @@ export default function AboutUs() {
         </div>
       </section>
 
+      {/* NEW: The MountLift Workflow (Rival-Inspired) */}
+      <section className="py-24 px-6 lg:px-8 bg-white border-t border-gray-100 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 
+              className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent"
+            >
+              THE CAMPAIGN ECOSYSTEM
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-light leading-relaxed">
+              We don't just find influencers; we manage the entire lifecycle. From AI-driven discovery to real-time ROI tracking.
+            </p>
+          </div>
+
+          <div className="relative">
+            {/* Connecting Line */}
+            <div className="hidden lg:block absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-indigo-50 via-indigo-100 to-indigo-50 -translate-y-1/2 z-0"></div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 relative z-10">
+              {[
+                { 
+                  title: "Discovery", 
+                  icon: "🔍", 
+                  desc: "AI-powered matching to find creators who actually align with your brand DNA." 
+                },
+                { 
+                  title: "Vetting", 
+                  icon: "🛡️", 
+                  desc: " rigorous fraud checks, audience health analysis, and brand safety scanning." 
+                },
+                { 
+                  title: "Activation", 
+                  icon: "🚀", 
+                  desc: "Contracting, briefing, and content approvals handled entirely by our team." 
+                },
+                { 
+                  title: "Amplification", 
+                  icon: "📢", 
+                  desc: "Boosting top-performing organic content with paid media strategies." 
+                },
+                { 
+                  title: "Reporting", 
+                  icon: "📊", 
+                  desc: "Live dashboards tracking CPM, CPA, and real conversion data." 
+                }
+              ].map((step, i) => (
+                <div 
+                  key={i}
+                  className="group bg-white p-8 rounded-2xl border border-gray-100 hover:border-indigo-300 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+                >
+                  <div className="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform shadow-sm group-hover:bg-indigo-600 group-hover:text-white">
+                    {step.icon}
+                  </div>
+                  <div className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">Step 0{i + 1}</div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-3">{step.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">
+                    {step.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* NEW: "Stats Bar" (Trust Signals) */}
+      <section className="py-16 bg-black text-white relative overflow-hidden">
+        {/* Abstract BG */}
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/40 to-purple-900/40 opacity-50"></div>
+        
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 text-center divide-x divide-white/10">
+            {[
+              { label: "Creators in Network", value: "1,200+" },
+              { label: "Engagement Rate", value: "3x Avg" },
+              { label: "Campaigns Optimized", value: "50+" },
+              { label: "Creator Tools", value: "6+" }
+            ].map((stat, i) => (
+              <div key={i} className="p-4">
+                <div className="text-4xl lg:text-5xl font-bold mb-2 bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent font-sans">
+                  {stat.value}
+                </div>
+                <div className="text-sm font-medium text-gray-400 uppercase tracking-widest">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Vision / CTA Section */}
       <section ref={teamRef} className="py-32 px-6 lg:px-8 bg-black text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/40 to-black pointer-events-none"></div>

@@ -9,7 +9,7 @@ export default function MountLift() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set())
   
-  // Updated State to include Country Code
+  // State for Form
   const [countryCode, setCountryCode] = useState('+1')
   const [formData, setFormData] = useState({
     name: '',
@@ -23,27 +23,28 @@ export default function MountLift() {
   const [scrollY, setScrollY] = useState(0)
   const [magneticButton, setMagneticButton] = useState({ x: 0, y: 0 })
   const [loading, setLoading] = useState(false)
-  
-  // UPDATED: Added 'validation' status
   const [status, setStatus] = useState<'idle' | 'success' | 'error' | 'validation'>('idle')
   const [activeBenefit, setActiveBenefit] = useState<number | null>(null)
   
-  // NEW: Scroll to top state
+  // Scroll to top state
   const [showScrollTop, setShowScrollTop] = useState(false)
   
   // FAQ state
   const [openFAQ, setOpenFAQ] = useState<number | null>(null)
 
+  // Refs for Scroll Animations
+  const heroRef = useRef<HTMLDivElement>(null)
   const benefitsRef = useRef<HTMLDivElement>(null)
-  const [showPopup, setShowPopup] = useState(false)
   const caseStudiesRef = useRef<HTMLDivElement>(null)
   const exclusiveRef = useRef<HTMLDivElement>(null)
   const toolsRef = useRef<HTMLDivElement>(null)
+  const creatorRef = useRef<HTMLDivElement>(null)
+  const faqRef = useRef<HTMLDivElement>(null)
   const contactRef = useRef<HTMLDivElement>(null)
-  const heroRef = useRef<HTMLDivElement>(null)
+  
   const headlineRef = useRef<HTMLHeadingElement>(null)
   const ctaButtonRef = useRef<HTMLAnchorElement>(null)
-  const faqRef = useRef<HTMLDivElement>(null)
+  const [showPopup, setShowPopup] = useState(false)
 
   // Accent color - vibrant professional palette
   const accentColor = '#6366F1' // Indigo-500
@@ -113,8 +114,9 @@ export default function MountLift() {
         { ref: caseStudiesRef, id: 'caseStudies' },
         { ref: exclusiveRef, id: 'exclusive' },
         { ref: toolsRef, id: 'tools' },
-        { ref: contactRef, id: 'contact' },
-        { ref: faqRef, id: 'faq' }
+        { ref: creatorRef, id: 'creator' },
+        { ref: faqRef, id: 'faq' },
+        { ref: contactRef, id: 'contact' }
       ]
 
       sections.forEach(({ ref, id }) => {
@@ -209,9 +211,9 @@ export default function MountLift() {
     setLoading(true)
     setStatus('idle')
 
-    // UPDATED: Strict Phone Length Validation
+    // Strict Phone Length Validation
     if (formData.phone.length < 10) {
-      setStatus('validation') // Trigger validation error
+      setStatus('validation')
       setShowPopup(true)
       setLoading(false)
       return
@@ -240,7 +242,7 @@ export default function MountLift() {
       setLoading(false)
       setShowPopup(true)
 
-      // auto close popup after 4 seconds only on success
+      // auto close popup after 4 seconds (unless error)
       if (status !== 'error' && status !== 'validation') {
         setTimeout(() => setShowPopup(false), 4000)
       }
@@ -383,7 +385,7 @@ boundaries.`,
   ]
 
   return (
-    <div className="min-h-screen bg-white text-black overflow-x-hidden">
+    <div className="min-h-screen bg-white text-black overflow-x-hidden font-sans selection:bg-indigo-500 selection:text-white">
       {/* Background Noise Texture */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.03] z-0">
         <div className="absolute inset-0" style={{
@@ -438,7 +440,7 @@ boundaries.`,
 
             {/* Mobile Menu Toggle */}
               <button 
-                className="lg:hidden p-2 transition-all duration-300 hover:text-gray-600"
+                className="lg:hidden p-2 transition-all duration-300 hover:text-gray-600 active:scale-95"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -448,7 +450,7 @@ boundaries.`,
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-gray-200 shadow-lg">
+          <div className="lg:hidden bg-white border-t border-gray-200 shadow-lg animate-fade-in-up">
             <div className="px-6 py-4 space-y-3">
               {navItems.map((item, index) => (
                 <Link
@@ -461,7 +463,8 @@ boundaries.`,
                     item === 'About Us' ? '/about-us' :
                     item === 'Contact' ? '#contact' : '#'
                   }
-                  className="block text-sm font-light py-2 hover:text-gray-600 transition-colors"
+                  className="block text-sm font-light py-2 hover:text-gray-600 transition-colors active:text-indigo-600"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   {item}
                 </Link>
@@ -473,30 +476,30 @@ boundaries.`,
 
       {/* Hero Section */}
       <section id="influencer-marketing" ref={heroRef} className="min-h-screen flex items-center justify-center px-6 lg:px-8 pt-24 relative bg-white overflow-hidden">
-        {/* Gradient Blur Background */}
+        {/* Gradient Blur Background - Optimized for mobile */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-indigo-500/10 via-violet-500/10 to-pink-500/10 blur-[100px] rounded-full"></div>
-          <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-cyan-500/5 blur-[80px] rounded-full"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[800px] h-[400px] md:h-[800px] bg-gradient-to-r from-indigo-500/10 via-violet-500/10 to-pink-500/10 blur-[60px] md:blur-[100px] rounded-full"></div>
+          <div className="hidden md:block absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-cyan-500/5 blur-[80px] rounded-full"></div>
         </div>
 
-        {/* Glossy Floating Bubbles */}
+        {/* Glossy Floating Bubbles - Hidden on Mobile for performance */}
         <div 
-          className="absolute top-20 left-10 w-32 h-32 glossy-bubble floating-element-slow" 
+          className="hidden md:block absolute top-20 left-10 w-32 h-32 glossy-bubble floating-element-slow" 
           style={{ transform: `translateY(${scrollY * 0.3}px)` }}
         ></div>
         <div 
-          className="absolute top-40 right-20 w-24 h-24 glossy-bubble-lg floating-element-delayed" 
+          className="hidden md:block absolute top-40 right-20 w-24 h-24 glossy-bubble-lg floating-element-delayed" 
           style={{ transform: `translateY(${scrollY * 0.2}px)` }}
         ></div>
         <div 
-          className="absolute bottom-32 left-20 w-40 h-40 glossy-bubble floating-element" 
+          className="hidden md:block absolute bottom-32 left-20 w-40 h-40 glossy-bubble floating-element" 
           style={{ transform: `translateY(${scrollY * 0.4}px)` }}
         ></div>
 
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <h1 
             ref={headlineRef}
-            className="text-5xl lg:text-8xl font-bold leading-tight mb-8 tracking-tight transition-all duration-1000 ease-out-quint"
+            className="text-4xl md:text-5xl lg:text-8xl font-bold leading-tight mb-8 tracking-tight transition-all duration-1000 ease-out-quint"
             style={{ 
               opacity: headlineOpacity,
               transform: visibleSections.has('hero') ? 'translateY(0)' : 'translateY(30px)',
@@ -510,7 +513,7 @@ boundaries.`,
             CAMPAIGNS
           </h1>
           <p 
-            className="text-lg lg:text-xl text-gray-600 mb-16 max-w-3xl mx-auto font-light tracking-wide leading-relaxed"
+            className="text-base md:text-lg lg:text-xl text-gray-600 mb-12 max-w-3xl mx-auto font-light tracking-wide leading-relaxed"
             style={{
               opacity: visibleSections.has('hero') ? 1 : 0,
               transform: visibleSections.has('hero') ? 'translateY(0)' : 'translateY(20px)',
@@ -521,7 +524,7 @@ boundaries.`,
             with authentic creators to drive measurable results and meaningful engagement.
           </p>
           
-          {/* RESPONSIVE BUTTON */}
+          {/* RESPONSIVE BUTTON with Active State */}
           <div className="flex justify-center px-4 sm:px-0 w-full sm:w-auto">
             <a 
               href="mailto:mountliftagency@gmail.com?subject=Book a Campaign Call"
@@ -529,7 +532,7 @@ boundaries.`,
               onClick={createRipple}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
-              className="relative inline-block w-full sm:w-auto px-8 py-4 md:px-12 md:py-5 bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 text-white font-medium rounded-full transition-all duration-500 transform overflow-hidden group text-center shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40"
+              className="relative inline-block w-full sm:w-auto px-8 py-4 md:px-12 md:py-5 bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 text-white font-medium rounded-full transition-all duration-500 transform overflow-hidden group text-center shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 active:scale-95"
               style={{
                 transform: `translate(${magneticButton.x}px, ${magneticButton.y}px) scale(${visibleSections.has('hero') ? 1 : 0.95})`,
                 transition: 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease'
@@ -557,7 +560,7 @@ boundaries.`,
         </div>
       </section>
 
-      {/* NEW: Platform Marquee Section */}
+      {/* Platform Marquee Section */}
       <section className="py-10 bg-white border-b border-gray-100 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="text-center text-sm font-medium text-gray-400 mb-8 tracking-widest uppercase">
@@ -567,11 +570,11 @@ boundaries.`,
             <div className="flex animate-marquee whitespace-nowrap gap-16 items-center">
               {[1, 2, 3, 4].map((i) => (
                 <React.Fragment key={i}>
-                  <span className="text-2xl font-bold text-gray-300 flex items-center gap-2"><Instagram className="w-6 h-6"/> Instagram</span>
-                  <span className="text-2xl font-bold text-gray-300 flex items-center gap-2"><Music className="w-6 h-6"/> TikTok</span>
-                  <span className="text-2xl font-bold text-gray-300 flex items-center gap-2"><Video className="w-6 h-6"/> YouTube</span>
-                  <span className="text-2xl font-bold text-gray-300 flex items-center gap-2"><Linkedin className="w-6 h-6"/> LinkedIn</span>
-                  <span className="text-2xl font-bold text-gray-300 flex items-center gap-2"><MessageCircle className="w-6 h-6"/> Snapchat</span>
+                  <span className="text-xl md:text-2xl font-bold text-gray-300 flex items-center gap-2"><Instagram className="w-5 h-5 md:w-6 md:h-6"/> Instagram</span>
+                  <span className="text-xl md:text-2xl font-bold text-gray-300 flex items-center gap-2"><Music className="w-5 h-5 md:w-6 md:h-6"/> TikTok</span>
+                  <span className="text-xl md:text-2xl font-bold text-gray-300 flex items-center gap-2"><Video className="w-5 h-5 md:w-6 md:h-6"/> YouTube</span>
+                  <span className="text-xl md:text-2xl font-bold text-gray-300 flex items-center gap-2"><Linkedin className="w-5 h-5 md:w-6 md:h-6"/> LinkedIn</span>
+                  <span className="text-xl md:text-2xl font-bold text-gray-300 flex items-center gap-2"><MessageCircle className="w-5 h-5 md:w-6 md:h-6"/> Snapchat</span>
                 </React.Fragment>
               ))}
             </div>
@@ -582,7 +585,7 @@ boundaries.`,
       {/* Section Divider */}
       <div className="relative h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-1"></div>
 
-      {/* Key Benefits Cards */}
+      {/* Key Benefits Cards (Mobile Responsive) */}
       <section
         id="benefits"
         ref={benefitsRef}
@@ -609,7 +612,8 @@ boundaries.`,
               return (
                 <div
                   key={index}
-                  className="group relative h-[420px] bg-white rounded-[2rem] border border-gray-100 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:border-gray-200"
+                  // Added active:scale-95 for touch feedback
+                  className="group relative h-[420px] bg-white rounded-[2rem] border border-gray-100 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:border-gray-200 active:scale-95"
                 >
                   <div 
                     className={`absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-br ${benefit.color} opacity-0 group-hover:opacity-5 blur-[80px] transition-opacity duration-700 pointer-events-none rounded-full translate-x-1/3 -translate-y-1/3`} 
@@ -634,8 +638,8 @@ boundaries.`,
                     </div>
 
                     <div className="pt-6 border-t border-gray-50 mt-auto group-hover:opacity-20 transition-opacity duration-500">
-                      <div className="text-xs font-bold uppercase tracking-widest text-gray-300">
-                        Our Focus
+                      <div className="text-xs font-bold uppercase tracking-widest text-gray-300 flex items-center gap-2">
+                        Our Focus <ChevronRight className="w-3 h-3 md:hidden" /> {/* Added hint for mobile */}
                       </div>
                     </div>
                   </div>
@@ -687,7 +691,11 @@ boundaries.`,
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+            {/* Desktop Horizontal Line */}
             <div className="hidden lg:block absolute top-12 left-0 w-full h-0.5 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 -z-10"></div>
+            
+            {/* Mobile Vertical Line */}
+            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-indigo-100 to-pink-100 lg:hidden -z-10"></div>
 
             {[
               {
@@ -717,7 +725,7 @@ boundaries.`,
             ].map((item, index) => (
               <div 
                 key={index}
-                className={`relative bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-500 group ${
+                className={`relative bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-500 group active:scale-95 ${
                   visibleSections.has('caseStudies') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                 }`}
                 style={{ transitionDelay: `${index * 150}ms` }}
@@ -747,7 +755,7 @@ boundaries.`,
              <div className="inline-block p-1 rounded-full bg-gradient-to-r from-indigo-100 via-violet-100 to-pink-100">
                <a 
                  href="mailto:mountliftagency@gmail.com"
-                 className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium rounded-full hover:from-indigo-700 hover:to-violet-700 transition-all duration-300 inline-flex items-center gap-2 group shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40"
+                 className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium rounded-full hover:from-indigo-700 hover:to-violet-700 transition-all duration-300 inline-flex items-center gap-2 group shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 active:scale-95"
                >
                  Start Your Campaign
                  <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
@@ -788,7 +796,7 @@ boundaries.`,
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div
-              className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+              className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 active:scale-95"
               style={{
                 opacity: visibleSections.has('exclusive') ? 1 : 0,
                 transform: visibleSections.has('exclusive') ? 'translateY(0)' : 'translateY(40px)',
@@ -803,7 +811,7 @@ boundaries.`,
             </div>
             
             <div
-              className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+              className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 active:scale-95"
               style={{
                 opacity: visibleSections.has('exclusive') ? 1 : 0,
                 transform: visibleSections.has('exclusive') ? 'translateY(0)' : 'translateY(40px)',
@@ -818,7 +826,7 @@ boundaries.`,
             </div>
             
             <div
-              className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+              className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 active:scale-95"
               style={{
                 opacity: visibleSections.has('exclusive') ? 1 : 0,
                 transform: visibleSections.has('exclusive') ? 'translateY(0)' : 'translateY(40px)',
@@ -836,7 +844,7 @@ boundaries.`,
           <div className="text-center mt-16">
             <Link 
               href="#contact"
-              className="inline-block px-8 py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium rounded-full hover:from-indigo-700 hover:to-violet-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-lg shadow-indigo-500/30"
+              className="inline-block px-8 py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium rounded-full hover:from-indigo-700 hover:to-violet-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-lg shadow-indigo-500/30 active:scale-95"
             >
               Become a Partner
             </Link>
@@ -879,7 +887,7 @@ boundaries.`,
               {creatorTools.map((tool, index) => (
                 <div
                   key={index}
-                  className="group relative bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden h-full flex flex-col justify-between"
+                  className="group relative bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl p-8 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden h-full flex flex-col justify-between active:scale-95"
                   style={{
                     opacity: visibleSections.has('tools') ? 1 : 0,
                     transform: visibleSections.has('tools') ? 'translateY(0)' : 'translateY(40px)',
@@ -918,34 +926,34 @@ boundaries.`,
               ))}
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="mt-20 text-center">
-            <div 
-              className="bg-gradient-to-r from-gray-100 to-gray-50 rounded-3xl p-12 border border-gray-200"
-              style={{
-                opacity: visibleSections.has('tools') ? 1 : 0,
-                transform: visibleSections.has('tools') ? 'translateY(0)' : 'translateY(40px)',
-                transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s'
-              }}
-            >
-              <h3 className="text-3xl font-bold mb-4">Ready to Level Up?</h3>
-              <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-                Join thousands of creators who use our tools to grow their audience, 
-                increase engagement, and monetize effectively.
-              </p>
-              <div className="flex justify-center w-full px-4 sm:px-0">
-                <button className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium rounded-full hover:from-indigo-700 hover:to-violet-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg shadow-lg shadow-indigo-500/30">
-                  Start Free Trial
-                </button>
-              </div>
-            </div>
+      {/* NEW: Creator Callout (Before FAQ) */}
+      <section ref={creatorRef} className="bg-black text-white py-16 px-6 overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600 rounded-full blur-[100px] opacity-50"></div>
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between relative z-10"
+             style={{
+               opacity: visibleSections.has('creator') ? 1 : 0,
+               transform: visibleSections.has('creator') ? 'translateY(0)' : 'translateY(20px)',
+               transition: 'all 0.8s ease-out'
+             }}>
+          <div className="mb-6 md:mb-0">
+            <h3 className="text-2xl font-bold mb-2">Are you a Creator?</h3>
+            <p className="text-gray-400 text-sm">Join our exclusive network and work with premium brands.</p>
           </div>
+          <Link 
+            href="mailto:mountliftagency@gmail.com?subject=Apply to Join as a Creator"
+            className="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full transition-all active:scale-95"
+          >
+            <span>Apply to Join</span>
+            <ArrowUpRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
 
       {/* NEW: FAQ Section */}
       <section ref={faqRef} className="py-24 px-6 lg:px-8 bg-white border-t border-gray-100 relative overflow-hidden">
-        {/* Decorative gradient background */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500 rounded-full blur-3xl"></div>
           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-500 rounded-full blur-3xl"></div>
@@ -981,7 +989,7 @@ boundaries.`,
                 <div
                   onClick={() => setOpenFAQ(openFAQ === i ? null : i)}
                   className={`
-                    border rounded-2xl p-6 cursor-pointer transition-all duration-500 ease-out
+                    border rounded-2xl p-6 cursor-pointer transition-all duration-500 ease-out active:scale-[0.99]
                     ${openFAQ === i 
                       ? 'border-indigo-300 bg-gradient-to-br from-indigo-50/50 via-violet-50/30 to-pink-50/50 shadow-lg shadow-indigo-500/10' 
                       : 'border-gray-200 bg-white hover:border-indigo-200 hover:shadow-md hover:shadow-indigo-500/5'
@@ -1044,7 +1052,7 @@ boundaries.`,
                 href="https://www.instagram.com/mount.lift/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative p-5 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white transition-all duration-500 transform hover:scale-110 hover:shadow-xl hover:shadow-purple-500/30 group"
+                className="relative p-5 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white transition-all duration-500 transform hover:scale-110 hover:shadow-xl hover:shadow-purple-500/30 group active:scale-95"
               >
                 <Instagram className="w-8 h-8" />
                 <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
@@ -1053,7 +1061,7 @@ boundaries.`,
                 href="https://www.linkedin.com/company/mountlift-agency/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative p-5 rounded-full bg-blue-600 text-white transition-all duration-500 transform hover:scale-110 hover:shadow-xl hover:shadow-blue-500/30 group"
+                className="relative p-5 rounded-full bg-blue-600 text-white transition-all duration-500 transform hover:scale-110 hover:shadow-xl hover:shadow-blue-500/30 group active:scale-95"
               >
                 <Linkedin className="w-8 h-8" />
                 <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
@@ -1075,7 +1083,6 @@ boundaries.`,
             
             <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* NAME INPUT: Letters only */}
                 <input
                   type="text"
                   name="name"
@@ -1086,8 +1093,6 @@ boundaries.`,
                   className="w-full px-6 py-4 bg-white border border-gray-200 focus:border-indigo-500 focus:outline-none transition-all duration-500 focus:ring-2 focus:ring-indigo-500/20 font-light rounded-xl"
                   required
                 />
-                
-                {/* EMAIL INPUT: Standard email validation */}
                 <input
                   type="email"
                   name="email"
@@ -1099,7 +1104,6 @@ boundaries.`,
                 />
               </div>
 
-              {/* PHONE INPUT: Country Code Dropdown + Numbers only */}
               <div className="flex gap-4">
                 <div className="relative">
                   <select
@@ -1140,7 +1144,7 @@ boundaries.`,
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full md:w-auto px-12 py-5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium transition-all duration-300 hover:from-indigo-700 hover:to-violet-700 disabled:opacity-60 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/30 rounded-full"
+                className="w-full md:w-auto px-12 py-5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-medium transition-all duration-300 hover:from-indigo-700 hover:to-violet-700 disabled:opacity-60 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/30 rounded-full active:scale-95"
               >
                 {loading ? 'Sending...' : 'Send Message'}
               </button>
@@ -1164,7 +1168,7 @@ boundaries.`,
                 <p className="text-gray-600 mb-6">We couldn’t send your message right now. Please try again later.</p>
               </>
             )}
-            {status === 'validation' && ( // Added validation error UI
+            {status === 'validation' && (
               <>
                 <h3 className="text-2xl font-bold mb-4 text-orange-600">⚠️ Invalid Input</h3>
                 <p className="text-gray-600 mb-6">Please enter a valid phone number (at least 10 digits).</p>
@@ -1172,7 +1176,7 @@ boundaries.`,
             )}
             <button
               onClick={() => setShowPopup(false)}
-              className="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-full hover:from-indigo-700 hover:to-violet-700 transition-all duration-300 shadow-lg shadow-indigo-500/30"
+              className="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-full hover:from-indigo-700 hover:to-violet-700 transition-all duration-300 shadow-lg shadow-indigo-500/30 active:scale-95"
             >
               Close
             </button>
@@ -1180,10 +1184,10 @@ boundaries.`,
         </div>
       )}
 
-      {/* NEW: Scroll to Top Button */}
+      {/* Scroll to Top Button */}
       <button 
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className={`fixed bottom-8 right-8 p-4 bg-indigo-600 text-white rounded-full shadow-2xl transition-all duration-300 z-50 hover:bg-indigo-700 hover:scale-110 ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
+        className={`fixed bottom-8 right-8 p-4 bg-indigo-600 text-white rounded-full shadow-2xl transition-all duration-300 z-50 hover:bg-indigo-700 hover:scale-110 active:scale-95 ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
       >
         <ArrowUp className="w-6 h-6" />
       </button>
@@ -1199,15 +1203,15 @@ boundaries.`,
             <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-12">
               <div className="flex space-x-10">
                 <Link href="/privacy" className="text-sm font-light hover:text-white transition-colors duration-300">Privacy</Link>
-                <Link href="#" className="text-sm font-light hover:text-white transition-colors duration-300">Terms</Link>
-                <Link href="#" className="text-sm font-light hover:text-white transition-colors duration-300">Careers</Link>
+                <Link href="/privacy" className="text-sm font-light hover:text-white transition-colors duration-300">Terms</Link>
+                <Link href="/work-in-progress" className="text-sm font-light hover:text-white transition-colors duration-300">Careers</Link>
               </div>
               <div className="flex space-x-8">
                 <a 
                   href="https://www.instagram.com/mount.lift/" 
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 border border-white/20 rounded-full hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:border-transparent transition-all duration-300 hover:scale-110"
+                  className="p-3 border border-white/20 rounded-full hover:bg-gradient-to-r hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 hover:border-transparent transition-all duration-300 hover:scale-110 active:scale-95"
                 >
                   <Instagram className="w-5 h-5" />
                 </a>
@@ -1215,7 +1219,7 @@ boundaries.`,
                   href="https://www.linkedin.com/company/mountlift-agency/" 
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 border border-white/20 rounded-full hover:bg-indigo-600 hover:border-transparent transition-all duration-300 hover:scale-110"
+                  className="p-3 border border-white/20 rounded-full hover:bg-indigo-600 hover:border-transparent transition-all duration-300 hover:scale-110 active:scale-95"
                 >
                   <Linkedin className="w-5 h-5" />
                 </a>
