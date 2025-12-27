@@ -505,10 +505,10 @@ export default function AboutUs() {
               Start a Campaign
             </Link>
             <div className="flex gap-4 ml-0 sm:ml-6">
-              <a href="https://instagram.com" className="p-4 bg-white/10 rounded-full hover:bg-white/20 transition-colors border border-white/10">
+              <a href="https://www.instagram.com/mount.lift/" className="p-4 bg-white/10 rounded-full hover:bg-white/20 transition-colors border border-white/10">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="https://linkedin.com" className="p-4 bg-white/10 rounded-full hover:bg-white/20 transition-colors border border-white/10">
+              <a href="https://www.linkedin.com/company/mountlift-agency/" className="p-4 bg-white/10 rounded-full hover:bg-white/20 transition-colors border border-white/10">
                 <Linkedin className="w-5 h-5" />
               </a>
             </div>
