@@ -376,18 +376,26 @@ export default function AboutUsAdvanced() {
             Whether you are a brand looking to establish market dominance or a creator ready to scale your infrastructure, we are ready to deploy.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-8 justify-center items-center">
-            <Magnetic>
-              <Link href="/#contact" className="px-12 py-6 bg-white text-black font-black uppercase tracking-widest text-xl rounded-full hover:scale-105 transition-transform shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)]">
-                Start Sequence
-              </Link>
-            </Magnetic>
-            <div className="flex gap-4">
-              <a href="https://instagram.com" className="p-6 border-2 border-white/10 rounded-full hover:border-[#ff0055] hover:text-[#ff0055] transition-colors text-white">
-                <Instagram className="w-8 h-8" />
+          <div 
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            style={{
+              opacity: visibleSections.has('team') ? 1 : 0,
+              transform: visibleSections.has('team') ? 'translateY(0)' : 'translateY(40px)',
+              transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s'
+            }}
+          >
+            <Link 
+              href="/"
+              className="px-10 py-4 bg-white text-black font-bold rounded-full hover:bg-indigo-50 transition-all duration-300 transform hover:scale-105"
+            >
+              Start a Campaign
+            </Link>
+            <div className="flex gap-4 ml-0 sm:ml-6">
+              <a href="https://instagram.com" className="p-4 bg-white/10 rounded-full hover:bg-white/20 transition-colors border border-white/10">
+                <Instagram className="w-5 h-5" />
               </a>
-              <a href="https://linkedin.com" className="p-6 border-2 border-white/10 rounded-full hover:border-[#00ffcc] hover:text-[#00ffcc] transition-colors text-white">
-                <Linkedin className="w-8 h-8" />
+              <a href="https://linkedin.com" className="p-4 bg-white/10 rounded-full hover:bg-white/20 transition-colors border border-white/10">
+                <Linkedin className="w-5 h-5" />
               </a>
             </div>
           </div>
