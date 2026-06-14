@@ -15,24 +15,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MountLift - Influencer Marketing Agency",
-  description: "MountLift is a data-driven influencer marketing agency that connects premium brands with authentic creators to drive measurable results and meaningful engagement.",
-  keywords: ["MountLift", "influencer marketing", "creator tools", "brand partnerships", "social media marketing", "content creators"],
+  title: "MT/LFT | Attention Architectures",
+  description: "We break algorithms. A data-driven influencer marketing agency matching premium brands with exclusive creators via proprietary neural networks.",
+  keywords: ["MountLift", "influencer marketing", "viral scaling", "creator roster", "attention architecture"],
   authors: [{ name: "MountLift Team" }],
   icons: {
     icon: "/logo.svg",
   },
   openGraph: {
-    title: "MountLift - Influencer Marketing Agency",
-    description: "Data-driven influencer marketing that connects brands with authentic creators for measurable results.",
+    title: "MT/LFT | Attention Architectures",
+    description: "We break algorithms. A data-driven influencer marketing agency matching premium brands with exclusive creators.",
     url: "https://mountlift.agency",
     siteName: "MountLift",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "MountLift - Influencer Marketing Agency",
-    description: "Data-driven influencer marketing that connects brands with authentic creators for measurable results.",
+    title: "MT/LFT | Attention Architectures",
+    description: "We break algorithms. A data-driven influencer marketing agency matching premium brands with exclusive creators.",
   },
   other: {
     "instagram": "https://www.instagram.com/mount.lift/",
@@ -47,13 +47,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0a0a0a] text-white min-h-screen flex flex-col overscroll-none`}
       >
-        {children}
+        <main className="flex-grow w-full">
+          {children}
+        </main>
         <Toaster />
-        {/* Vercel Speed Insights */}
         <SpeedInsights />
       </body>
     </html>

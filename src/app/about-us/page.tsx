@@ -1,520 +1,402 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { ArrowLeft, Target, Users, TrendingUp, Lightbulb, Globe, Heart, CheckCircle2, Link as LinkIcon, BarChart3, Sparkles, Instagram, Linkedin } from 'lucide-react'
+import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence } from 'framer-motion'
+import { ArrowLeft, Target, Users, TrendingUp, Lightbulb, Globe, Instagram, Linkedin, Link as LinkIcon, BarChart3, ShieldAlert, Cpu, Network } from 'lucide-react'
 import Link from 'next/link'
 
-export default function AboutUs() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set())
-  const [scrollY, setScrollY] = useState(0)
+// --- UTILITIES ---
 
-  // 1. Added heroRef
-  const heroRef = useRef<HTMLDivElement>(null)
-  const missionRef = useRef<HTMLDivElement>(null)
-  const valuesRef = useRef<HTMLDivElement>(null)
-  const approachRef = useRef<HTMLDivElement>(null)
-  const teamRef = useRef<HTMLDivElement>(null)
+const Magnetic = ({ children, className }: { children: React.ReactNode, className?: string }) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+
+  const springConfig = { damping: 15, stiffness: 150, mass: 0.1 }
+  const springX = useSpring(x, springConfig)
+  const springY = useSpring(y, springConfig)
+
+  const handleMouse = (e: React.MouseEvent) => {
+    if (!ref.current) return
+    const { clientX, clientY } = e
+    const { height, width, left, top } = ref.current.getBoundingClientRect()
+    const middleX = clientX - (left + width / 2)
+    const middleY = clientY - (top + height / 2)
+    x.set(middleX * 0.3)
+    y.set(middleY * 0.3)
+  }
+
+  const reset = () => {
+    x.set(0)
+    y.set(0)
+  }
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMouse}
+      onMouseLeave={reset}
+      style={{ x: springX, y: springY }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+// --- NEW ANIMATED LOGO COMPONENT ---
+const AnimatedLogo = () => {
+  return (
+    <Link href="/" className="flex items-center gap-1 group">
+      <span className="text-xl font-black tracking-tighter text-white uppercase">MT/LFT</span>
+      <motion.span
+        animate={{ 
+          scale: [1, 1.4, 1], 
+          rotate: [0, 15, -5, 0],
+          filter: ["brightness(1)", "brightness(2)", "brightness(1)"]
+        }}
+        transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+        className="text-xl text-[#ff0055] drop-shadow-[0_0_15px_rgba(255,0,85,0.8)]"
+      >
+        ⚡️
+      </motion.span>
+    </Link>
+  )
+}
+
+export default function AboutUsAdvanced() {
+  const [isScrolled, setIsScrolled] = useState(false)
+  const { scrollYProgress } = useScroll()
+  
+  // Drastic scroll transformations
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '50%'])
+  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8])
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
+  const rotateX = useTransform(scrollYProgress, [0, 0.2], [0, 45])
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY
-      setIsScrolled(currentScrollY > 20)
-      setScrollY(currentScrollY)
-      
-      // 2. Added hero to monitored sections
-      const sections = [
-        { ref: heroRef, id: 'hero' },
-        { ref: missionRef, id: 'mission' },
-        { ref: valuesRef, id: 'values' },
-        { ref: approachRef, id: 'approach' },
-        { ref: teamRef, id: 'team' }
-      ]
-
-      sections.forEach(({ ref, id }) => {
-        if (ref.current) {
-          const rect = ref.current.getBoundingClientRect()
-          // Adjusted trigger point for better mobile experience
-          const isVisible = rect.top < window.innerHeight * 0.85 && rect.bottom > 0
-          
-          setVisibleSections(prev => {
-            const newSet = new Set(prev)
-            if (isVisible) {
-              newSet.add(id)
-            } else {
-              newSet.delete(id)
-            }
-            return newSet
-          })
-        }
-      })
-    }
-    
+    const handleScroll = () => setIsScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handleScroll)
-    handleScroll() // Initial check
-    
-    // Force hero visible on mount to prevent "empty" look if JS lags
-    setVisibleSections(new Set(['hero']))
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   const values = [
-    {
-      title: 'Authenticity First',
-      description: 'We believe in genuine connections between brands and creators.',
-      icon: Heart,
-      color: 'from-pink-600 to-rose-500'
-    },
-    {
-      title: 'Data-Driven',
-      description: 'Strategies backed by comprehensive analytics and insights.',
-      icon: TrendingUp,
-      color: 'from-indigo-600 to-blue-500'
-    },
-    {
-      title: 'Innovation',
-      description: 'Pushing boundaries with fresh ideas and cutting-edge approaches.',
-      icon: Lightbulb,
-      color: 'from-amber-500 to-orange-500'
-    },
-    {
-      title: 'Partnership',
-      description: 'Long-term partners committed to mutual growth and success.',
-      icon: Users,
-      color: 'from-emerald-600 to-teal-500'
-    }
+    { title: 'Authentic Verification', description: 'We filter out bot traffic and engagement pods. Genuine connections only.', icon: ShieldAlert, color: '#ff0055' },
+    { title: 'Data Architecture', description: 'Every strategy is backed by deep analytics, not just vanity metrics.', icon: TrendingUp, color: '#00ffcc' },
+    { title: 'Technical Innovation', description: 'Pushing boundaries with our proprietary creator vetting algorithms.', icon: Cpu, color: '#9900ff' },
+    { title: 'Symbiotic Scaling', description: 'Long-term brand and creator partnerships committed to mutual growth.', icon: Users, color: '#ffcc00' }
   ]
 
-  const approach = [
-    {
-      title: 'Strategic Planning',
-      description: 'Campaign development with clear KPIs.',
-      stats: 'Step 01'
-    },
-    {
-      title: 'Creator Matching',
-      description: 'AI-powered matching algorithm.',
-      stats: 'Step 02'
-    },
-    {
-      title: 'Performance Tracking',
-      description: 'Real-time analytics and optimization.',
-      stats: 'Step 03'
-    },
-    {
-      title: 'Content Excellence',
-      description: 'Creative direction for compelling content.',
-      stats: 'Step 04'
-    }
+  const workflow = [
+    { phase: "01", title: "Discovery", icon: Network, desc: "Algorithmic matching to find creators who align with brand DNA.", color: "from-[#00ffcc] to-[#00aa88]" },
+    { phase: "02", title: "Vetting", icon: ShieldAlert, desc: "Rigorous fraud checks and audience health analysis.", color: "from-[#ff0055] to-[#aa0033]" },
+    { phase: "03", title: "Activation", icon: Globe, desc: "Contracting, briefing, and content approvals handled by our team.", color: "from-[#9900ff] to-[#5500aa]" },
+    { phase: "04", title: "Telemetry", icon: BarChart3, desc: "Live dashboards tracking CPM, CPA, and conversion velocity.", color: "from-[#ffcc00] to-[#aa8800]" }
   ]
 
   return (
-    <div className="min-h-screen bg-white text-black overflow-x-hidden font-sans">
+    <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden font-sans selection:bg-[#00ffcc] selection:text-black noise grid-overlay">
       
-      {/* --- ADDED: Background Grid Texture (Fills empty white space) --- */}
-      <div className="fixed inset-0 pointer-events-none opacity-5 z-0">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `
-            linear-gradient(to right, #6366F1 1px, transparent 1px),
-            linear-gradient(to bottom, #6366F1 1px, transparent 1px)
-          `,
-          backgroundSize: '60px 60px'
-        }}></div>
-      </div>
-
-      {/* Sticky Navbar */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? 'bg-white/95 backdrop-blur-md shadow-xl' : 'bg-white/0'
-      }`}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-24">
-            <Link href="/" className="text-2xl font-bold tracking-tight transition-all duration-300 hover:tracking-wider bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-500 bg-clip-text text-transparent">
-              MOUNTLIFT
-            </Link>
-
-            <Link 
-              href="/"
-              className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors group bg-white/80 px-4 py-2 rounded-full border border-gray-200 backdrop-blur-sm hover:border-indigo-300"
-            >
+      {/* Navigation */}
+      <nav className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ${isScrolled ? 'bg-black/80 backdrop-blur-xl border-b border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.5)]' : 'bg-transparent'}`}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-24">
+          <AnimatedLogo />
+          
+          <Magnetic>
+            <Link href="/" className="group flex items-center gap-3 text-xs font-black uppercase tracking-widest text-gray-400 hover:text-[#00ffcc] transition-colors border border-white/10 px-6 py-3 rounded-full hover:border-[#00ffcc]/50 bg-black/50">
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span className="font-medium text-sm">Back to Home</span>
+              Terminate & Return
             </Link>
-          </div>
+          </Magnetic>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      {/* 3. Attached ref={heroRef} here so animation works */}
-      <section ref={heroRef} className="min-h-[85vh] flex items-center justify-center px-6 lg:px-8 pt-24 relative overflow-hidden">
-        
-        {/* Stronger Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/80 via-white to-white z-0"></div>
-        <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-violet-300/20 rounded-full blur-[100px]"></div>
-        <div className="absolute bottom-[10%] left-[-10%] w-[500px] h-[500px] bg-indigo-300/20 rounded-full blur-[100px]"></div>
+      {/* Hero Section - Drastic 3D transformations */}
+      <section className="relative min-h-screen flex items-center justify-center px-6 pt-24 overflow-hidden perspective-1000">
+        {/* Massive glowing orb background */}
+        <motion.div style={{ y: backgroundY }} className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
+          <div className="w-[800px] h-[800px] bg-gradient-to-tr from-[#9900ff]/20 to-[#00ffcc]/20 blur-[150px] rounded-full animate-pulse-ring" />
+        </motion.div>
 
-        {/* --- ADDED: Floating Bubbles (Fills peripheral empty space) --- */}
-        <div className="absolute top-32 left-10 w-24 h-24 glossy-bubble floating-element-slow opacity-60"></div>
-        <div className="absolute top-40 right-20 w-32 h-32 glossy-bubble-lg floating-element-delayed opacity-60"></div>
-        <div className="absolute bottom-40 left-20 w-16 h-16 glossy-bubble-sm floating-element opacity-60"></div>
-
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div 
-            className="inline-block px-4 py-1.5 mb-8 rounded-full bg-white border border-indigo-100 text-indigo-600 text-xs font-bold tracking-widest uppercase shadow-sm"
-            style={{
-              opacity: visibleSections.has('hero') ? 1 : 0,
-              transform: visibleSections.has('hero') ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0ms'
-            }}
+        <motion.div 
+          style={{ scale: heroScale, opacity: heroOpacity, rotateX: rotateX }} 
+          className="max-w-5xl mx-auto text-center relative z-10 preserve-3d"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 100, rotateX: -45 }}
+            animate={{ opacity: 1, y: 0, rotateX: 0 }}
+            transition={{ duration: 1.2, type: "spring", bounce: 0.4 }}
           >
-            Who We Are
-          </div>
-          <h1 
-            className="text-6xl lg:text-9xl font-bold leading-tight mb-8 tracking-tight"
-            style={{
-              opacity: visibleSections.has('hero') ? 1 : 0,
-              transform: visibleSections.has('hero') ? 'translateY(0)' : 'translateY(30px)',
-              transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s'
-            }}
-          >
-            ABOUT <br/>
-            <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-500 bg-clip-text text-transparent">MOUNTLIFT</span>
-          </h1>
-          <p 
-            className="text-xl lg:text-2xl text-gray-600 mb-12 font-light leading-relaxed max-w-2xl mx-auto"
-            style={{
-              opacity: visibleSections.has('hero') ? 1 : 0,
-              transform: visibleSections.has('hero') ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s'
-            }}
-          >
-            Empowering brands and creators to build authentic connections that drive meaningful results in the digital age.
-          </p>
-        </div>
+            <div className="inline-flex items-center gap-2 border border-[#ff0055]/50 bg-[#ff0055]/10 text-[#ff0055] font-black tracking-widest uppercase text-xs px-6 py-2 rounded-full mb-8 shadow-[0_0_30px_rgba(255,0,85,0.3)]">
+              <span className="w-2 h-2 rounded-full bg-[#ff0055] animate-ping" />
+              System Architecture // Core Identity
+            </div>
+            
+            <h1 className="text-[12vw] md:text-[8vw] font-black tracking-tighter leading-[0.8] mb-8 uppercase flex flex-col">
+              <span className="text-white">WE ARE</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ffcc] via-[#9900ff] to-[#ff0055] drop-shadow-[0_0_20px_rgba(0,255,204,0.4)]">
+                MOUNTLIFT.
+              </span>
+            </h1>
+            
+            <p className="text-xl md:text-3xl text-gray-400 max-w-3xl mx-auto font-bold leading-tight mix-blend-difference">
+              Empowering brands to build authentic infrastructure that drives <span className="text-[#00ffcc] underline decoration-2 underline-offset-4">measurable conversions</span> in the digital age.
+            </p>
+          </motion.div>
+        </motion.div>
       </section>
 
-      {/* Marquee Strip */}
-      <div className="bg-black text-white py-4 overflow-hidden relative z-10 rotate-1 transform origin-left scale-105 border-y-4 border-indigo-500 shadow-2xl">
+      {/* Hyper-Speed Marquee Strip */}
+      <div className="bg-[#ff0055] py-4 overflow-hidden relative z-20 border-y border-white/20 transform -skew-y-2 translate-y-12">
         <div className="flex animate-marquee whitespace-nowrap">
-          {[...Array(10)].map((_, i) => (
-            <span key={i} className="mx-8 text-sm font-bold tracking-widest uppercase flex items-center gap-4">
-              Strategy <span className="text-indigo-500">•</span> Creativity <span className="text-indigo-500">•</span> Growth <span className="text-indigo-500">•</span>
+          {[...Array(15)].map((_, i) => (
+            <span key={i} className="mx-6 text-2xl font-black uppercase tracking-tighter flex items-center gap-6 text-black">
+              Strategy <span className="text-white">✕</span> Execution <span className="text-white">✕</span> Telemetry <span className="text-white">✕</span>
             </span>
           ))}
         </div>
       </div>
 
-      {/* Mission Section */}
-      <section ref={missionRef} className="py-32 px-6 lg:px-8 bg-white relative overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
-            {/* Left: Text Content */}
-            <div>
-              <h2 
-                className="text-4xl lg:text-6xl font-bold mb-8 tracking-tight text-gray-900"
-                style={{
-                  opacity: visibleSections.has('mission') ? 1 : 0,
-                  transform: visibleSections.has('mission') ? 'translateY(0)' : 'translateY(30px)',
-                  transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0ms'
-                }}
-              >
-                Our Mission
-              </h2>
-              <div 
-                className="space-y-6 text-lg text-gray-600 leading-relaxed font-light"
-                style={{
-                  opacity: visibleSections.has('mission') ? 1 : 0,
-                  transform: visibleSections.has('mission') ? 'translateY(0)' : 'translateY(20px)',
-                  transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s'
-                }}
-              >
-                <p className="border-l-4 border-indigo-500 pl-6">
-                  At MountLift, we bridge the gap between exceptional brands and talented creators, 
-                  fostering partnerships that transcend traditional advertising. Our mission is to 
-                  revolutionize influencer marketing through data-driven strategies.
+      {/* Mission Section - Cybernetic Terminal Design */}
+      <section className="py-40 px-6 lg:px-8 relative z-10 bg-[#0a0a0a]">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+          
+          {/* Left Side: Text Content */}
+          <motion.div
+            initial={{ opacity: 0, x: -100 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, type: "spring" }}
+          >
+            <h2 className="text-6xl lg:text-8xl font-black tracking-tighter mb-8 uppercase leading-[0.8]">
+              System<br/><span className="text-transparent bg-clip-text bg-gradient-to-b from-gray-500 to-[#0a0a0a]">Directives.</span>
+            </h2>
+            <div className="space-y-8 text-xl text-gray-400 font-medium leading-relaxed">
+              <div className="relative pl-8 border-l-4 border-[#00ffcc]">
+                <div className="absolute top-0 left-0 w-4 h-4 bg-[#00ffcc] -translate-x-[10px] rounded-sm" />
+                <p className="text-white">
+                  At MountLift, we bridge the gap between enterprise brands and native creators. Our mission is to revolutionize influencer marketing by removing guesswork and implementing strict, data-driven architecture.
                 </p>
-                <p>
-                  We believe that the most powerful marketing happens when genuine human connections 
-                  meet strategic excellence. Every campaign we craft is designed to not only reach 
-                  audiences but to resonate with them on a deeper level.
-                </p>
+              </div>
+              <p className="pl-8">
+                We believe that the most powerful marketing happens when genuine human connections meet technical excellence. Every campaign we deploy is engineered to resonate deeply and scale aggressively.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Right Side: Static Data Architecture Graphic */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, type: "spring" }}
+            className="card-glass h-[500px] rounded-[3rem] relative overflow-hidden group border border-white/10"
+          >
+            {/* Background Grid */}
+            <div className="absolute inset-0 grid-overlay opacity-30" />
+            
+            {/* Top Left: System Status Log */}
+            <div className="absolute top-8 left-8 font-mono text-[10px] uppercase tracking-widest z-10">
+              <div className="text-gray-500 mb-1">NODE_ID: MTLFT-CORE</div>
+              <div className="text-[#00ffcc] flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-[#00ffcc] rounded-full" />
+                STATUS: OPTIMAL
               </div>
             </div>
 
-            {/* Right: DNA / Hub Visualization */}
-            <div 
-              className="relative h-[500px]"
-              style={{
-                opacity: visibleSections.has('mission') ? 1 : 0,
-                transform: visibleSections.has('mission') ? 'translateY(0)' : 'translateY(40px)',
-                transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s'
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 to-white rounded-[2.5rem] border border-indigo-100 shadow-2xl overflow-hidden flex items-center justify-center p-8">
-                {/* Connecting Strands */}
-                <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" style={{ zIndex: 1 }}>
-                  <defs>
-                    <linearGradient id="strandGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#e0e7ff" />
-                      <stop offset="50%" stopColor="#6366F1" />
-                      <stop offset="100%" stopColor="#e0e7ff" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M 50 50 Q 35 50 20 25" fill="none" stroke="url(#strandGradient)" strokeWidth="0.5" strokeDasharray="2 2" />
-                  <path d="M 50 50 Q 65 50 80 30" fill="none" stroke="url(#strandGradient)" strokeWidth="0.5" strokeDasharray="2 2" />
-                  <path d="M 50 50 Q 50 70 50 85" fill="none" stroke="url(#strandGradient)" strokeWidth="0.5" strokeDasharray="2 2" />
-                </svg>
+            {/* Top Right: Vetting Badge */}
+            <div className="absolute top-8 right-8 border border-[#ff0055]/30 bg-[#ff0055]/10 px-4 py-2 rounded-md flex items-center gap-2 z-10">
+              <ShieldAlert className="w-4 h-4 text-[#ff0055]" />
+              <span className="font-black uppercase text-[10px] text-white">Vetting Locked</span>
+            </div>
 
-                {/* Central Bullseye */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
-                   <div className="relative flex items-center justify-center w-24 h-24 bg-black rounded-full shadow-2xl shadow-indigo-500/30 ring-4 ring-white">
-                      <Target className="w-10 h-10 text-white" />
-                      <div className="absolute inset-0 rounded-full border border-indigo-400 scale-150 animate-ping opacity-20"></div>
-                   </div>
+            {/* Center: Abstract Network Node (Static) */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
+              {/* Concentric targeting rings */}
+              <div className="w-72 h-72 border border-white/5 rounded-full flex items-center justify-center relative">
+                <div className="w-52 h-52 border border-[#00ffcc]/20 rounded-full flex items-center justify-center border-dashed">
+                  <div className="w-32 h-32 bg-[#0a0a0a] rounded-full border-2 border-[#00ffcc] shadow-[0_0_50px_rgba(0,255,204,0.15)] flex items-center justify-center relative z-10 transition-transform duration-500 group-hover:scale-105">
+                    <Network className="w-12 h-12 text-[#00ffcc]" />
+                  </div>
                 </div>
-
-                {/* Orbiting Cards */}
-                <div className="absolute top-[15%] left-[5%] bg-white p-4 rounded-xl shadow-lg border border-gray-100 flex items-center gap-3 animate-float-slow z-30">
-                   <div className="w-10 h-10 bg-indigo-50 rounded-full flex shrink-0 items-center justify-center text-indigo-600">
-                     <LinkIcon size={20} />
-                   </div>
-                   <div>
-                     <div className="text-xs text-gray-400 font-bold tracking-wide">FOCUS</div>
-                     <div className="font-bold text-sm">Connection</div>
-                   </div>
-                </div>
-
-                <div className="absolute top-[20%] right-[5%] bg-white p-4 rounded-xl shadow-lg border border-gray-100 flex items-center gap-3 animate-float-delayed z-30">
-                   <div className="w-10 h-10 bg-blue-50 rounded-full flex shrink-0 items-center justify-center text-blue-600">
-                     <BarChart3 size={20} />
-                   </div>
-                   <div>
-                     <div className="text-xs text-gray-400 font-bold tracking-wide">INSIGHT</div>
-                     <div className="font-bold text-sm">Data Strategy</div>
-                   </div>
-                </div>
-
-                <div className="absolute bottom-[10%] left-1/2 transform -translate-x-1/2 bg-white p-4 rounded-xl shadow-lg border border-gray-100 flex items-center gap-3 animate-float z-30 w-max">
-                   <div className="w-10 h-10 bg-pink-50 rounded-full flex shrink-0 items-center justify-center text-pink-600">
-                     <Sparkles size={20} />
-                   </div>
-                   <div>
-                     <div className="text-xs text-gray-400 font-bold tracking-wide">STYLE</div>
-                     <div className="font-bold text-sm">Creative Storytelling</div>
-                   </div>
-                </div>
+                {/* Axis Lines */}
+                <div className="absolute top-0 left-1/2 w-px h-full bg-white/5" />
+                <div className="absolute top-1/2 left-0 w-full h-px bg-white/5" />
               </div>
             </div>
-          </div>
+
+            {/* Bottom Left: Static Equalizer/Data Bars */}
+            <div className="absolute bottom-8 left-8 flex items-end gap-1.5 z-10">
+              {[35, 60, 20, 80, 45, 55, 30].map((height, i) => (
+                <div 
+                  key={i} 
+                  className="w-2 bg-[#9900ff]/60 rounded-t-sm" 
+                  style={{ height: `${height}px` }} 
+                />
+              ))}
+            </div>
+
+            {/* Bottom Right: Telemetry Readout */}
+            <div className="absolute bottom-8 right-8 font-mono text-[10px] text-right text-gray-500 uppercase tracking-widest z-10">
+              <div>LATENCY: 12ms</div>
+              <div>PACKETS: 14,029</div>
+              <div className="text-[#9900ff] mt-1">SECURE CONNECTION</div>
+            </div>
+          </motion.div>
+          
         </div>
       </section>
 
-      {/* Values Section */}
-      <section ref={valuesRef} className="py-32 px-6 lg:px-8 bg-gray-50 relative overflow-hidden">
+      {/* Values Section - Bento Grid Upgrade */}
+      <section className="py-32 px-6 lg:px-8 border-t border-white/10 bg-black/50 backdrop-blur-2xl relative z-10">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h2 
-              className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight"
-              style={{
-                opacity: visibleSections.has('values') ? 1 : 0,
-                transform: visibleSections.has('values') ? 'translateY(0)' : 'translateY(30px)',
-                transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0ms'
-              }}
-            >
-              Our Core Values
-            </h2>
-            <p 
-              className="text-xl text-gray-600 max-w-3xl mx-auto font-light leading-relaxed"
-              style={{
-                opacity: visibleSections.has('values') ? 1 : 0,
-                transform: visibleSections.has('values') ? 'translateY(0)' : 'translateY(20px)',
-                transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s'
-              }}
-            >
-              The principles that guide every decision we make.
+          <div className="mb-20">
+            <h2 className="text-5xl lg:text-7xl font-black uppercase tracking-tighter mb-4 text-white">Core Protocols.</h2>
+            <p className="text-2xl text-gray-500 font-bold max-w-3xl">
+              The foundational logic that dictates every execution.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="bg-white p-8 rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 group hover:-translate-y-1"
-                style={{
-                  opacity: visibleSections.has('values') ? 1 : 0,
-                  transform: visibleSections.has('values') ? 'translateY(0)' : 'translateY(40px)',
-                  transition: `all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${0.3 + index * 0.1}s`
-                }}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1, type: "spring" }}
+                whileHover={{ y: -10, scale: 1.02 }}
+                className="card-glass p-8 rounded-3xl group relative overflow-hidden"
               >
-                <div className={`w-16 h-16 bg-gradient-to-br ${value.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-md`}>
-                  <value.icon className="w-8 h-8 text-white" />
+                {/* Hover Glow Background */}
+                <div 
+                  className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-2xl"
+                  style={{ backgroundColor: value.color }}
+                />
+                
+                <div 
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-8 bg-black/50 border border-white/10 relative z-10"
+                  style={{ color: value.color }}
+                >
+                  <value.icon className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-gray-900">{value.title}</h3>
-                <p className="text-gray-500 leading-relaxed text-sm">{value.description}</p>
-              </div>
+                <h3 className="text-2xl font-black uppercase tracking-tight mb-4 text-white relative z-10">{value.title}</h3>
+                <p className="text-gray-400 font-medium leading-relaxed relative z-10">{value.description}</p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* NEW: The MountLift Workflow (Rival-Inspired) */}
-      <section className="py-24 px-6 lg:px-8 bg-white border-t border-gray-100 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h2 
-              className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent"
-            >
-              THE CAMPAIGN ECOSYSTEM
+      {/* The Campaign Ecosystem - Pipeline Visualization */}
+      <section className="py-40 px-6 lg:px-8 relative bg-[#0a0a0a] overflow-hidden">
+        {/* Huge background text */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none opacity-5">
+           <h2 className="text-[20vw] font-black uppercase leading-none">PIPELINE</h2>
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-24">
+            <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-6 text-white text-glow-cyan">
+              The Ecosystem
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-light leading-relaxed">
-              We don't just find influencers; we manage the entire lifecycle. From AI-driven discovery to real-time ROI tracking.
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto font-bold">
+              We don't just find influencers; we architect the entire lifecycle. From algorithmic discovery to real-time ROI tracking.
             </p>
           </div>
 
-          <div className="relative">
-            {/* Connecting Line */}
-            <div className="hidden lg:block absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-indigo-50 via-indigo-100 to-indigo-50 -translate-y-1/2 z-0"></div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 relative z-10">
-              {[
-                { 
-                  title: "Discovery", 
-                  icon: "🔍", 
-                  desc: "AI-powered matching to find creators who actually align with your brand DNA." 
-                },
-                { 
-                  title: "Vetting", 
-                  icon: "🛡️", 
-                  desc: " rigorous fraud checks, audience health analysis, and brand safety scanning." 
-                },
-                { 
-                  title: "Activation", 
-                  icon: "🚀", 
-                  desc: "Contracting, briefing, and content approvals handled entirely by our team." 
-                },
-                { 
-                  title: "Amplification", 
-                  icon: "📢", 
-                  desc: "Boosting top-performing organic content with paid media strategies." 
-                },
-                { 
-                  title: "Reporting", 
-                  icon: "📊", 
-                  desc: "Live dashboards tracking CPM, CPA, and real conversion data." 
-                }
-              ].map((step, i) => (
-                <div 
-                  key={i}
-                  className="group bg-white p-8 rounded-2xl border border-gray-100 hover:border-indigo-300 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
-                >
-                  <div className="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform shadow-sm group-hover:bg-indigo-600 group-hover:text-white">
-                    {step.icon}
-                  </div>
-                  <div className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">Step 0{i + 1}</div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-3">{step.title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">
-                    {step.desc}
-                  </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {workflow.map((step, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, rotateX: 90, y: 50 }}
+                whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.8, delay: i * 0.15, type: "spring", bounce: 0.4 }}
+                className="relative p-8 rounded-3xl bg-[#111] border border-white/10 hover:border-white/40 transition-all group overflow-hidden"
+              >
+                {/* Dynamic Gradient Bar */}
+                <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r ${step.color} transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500`} />
+                
+                <div className="flex justify-between items-start mb-8">
+                  <step.icon className="w-10 h-10 text-white opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all" />
+                  <span className="text-4xl font-black text-white/10 group-hover:text-white/30 transition-colors">{step.phase}</span>
                 </div>
-              ))}
-            </div>
+                
+                <h3 className="text-3xl font-black uppercase text-white mb-4">{step.title}</h3>
+                <p className="text-gray-400 font-medium">{step.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* NEW: "Stats Bar" (Trust Signals) */}
-      <section className="py-16 bg-black text-white relative overflow-hidden">
-        {/* Abstract BG */}
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/40 to-purple-900/40 opacity-50"></div>
-        
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 text-center divide-x divide-white/10">
+      {/* Giant Stats Bar */}
+      <section className="py-32 bg-[#ff0055] border-y border-white/20 transform skew-y-2 relative z-20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 transform -skew-y-2">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 text-center divide-x divide-black/20">
             {[
-              { label: "Creators in Network", value: "1,200+" },
-              { label: "Engagement Rate", value: "3x Avg" },
-              { label: "Campaigns Optimized", value: "50+" },
-              { label: "Creator Tools", value: "6+" }
+              { label: "Vetted Creators", value: "1.2K+" },
+              { label: "Engagement Delta", value: "3.2X" },
+              { label: "Deployments", value: "50+" },
+              { label: "Internal Tools", value: "06" }
             ].map((stat, i) => (
-              <div key={i} className="p-4">
-                <div className="text-4xl lg:text-5xl font-bold mb-2 bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent font-sans">
+              <motion.div 
+                key={i} 
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", delay: i * 0.1 }}
+                className="p-4"
+              >
+                <div className="text-6xl lg:text-8xl font-black mb-4 text-black tracking-tighter drop-shadow-lg">
                   {stat.value}
                 </div>
-                <div className="text-sm font-medium text-gray-400 uppercase tracking-widest">
+                <div className="text-xl font-black uppercase tracking-widest text-white drop-shadow-md">
                   {stat.label}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Vision / CTA Section */}
-      <section ref={teamRef} className="py-32 px-6 lg:px-8 bg-black text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/40 to-black pointer-events-none"></div>
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div 
-            className="mb-12 inline-flex"
-            style={{
-              opacity: visibleSections.has('team') ? 1 : 0,
-              transform: visibleSections.has('team') ? 'translateY(0)' : 'translateY(30px)',
-              transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0ms'
-            }}
+      <section className="py-40 px-6 lg:px-8 text-center relative z-10 bg-[#0a0a0a]">
+        <div className="max-w-5xl mx-auto relative z-10">
+          <motion.h2 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-7xl md:text-[8rem] leading-[0.8] font-black uppercase tracking-tighter mb-12"
           >
-            <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 animate-pulse">
-              <Globe className="w-10 h-10 text-white" />
-            </div>
-          </div>
-
-          <h2 
-            className="text-4xl lg:text-6xl font-bold mb-8 tracking-tight"
-            style={{
-              opacity: visibleSections.has('team') ? 1 : 0,
-              transform: visibleSections.has('team') ? 'translateY(0)' : 'translateY(30px)',
-              transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s'
-            }}
-          >
-            Join Our Journey
-          </h2>
+            Initialize <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ffcc] to-[#9900ff]">Partnership.</span>
+          </motion.h2>
           
-          <p 
-            className="text-xl text-gray-300 max-w-2xl mx-auto mb-12 font-light leading-relaxed"
-            style={{
-              opacity: visibleSections.has('team') ? 1 : 0,
-              transform: visibleSections.has('team') ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s'
-            }}
-          >
-            Whether you're a brand looking to make an impact or a creator ready to amplify your voice, 
-            we invite you to be part of something bigger.
+          <p className="text-2xl text-gray-400 max-w-3xl mx-auto mb-16 font-bold leading-relaxed">
+            Whether you are a brand looking to establish market dominance or a creator ready to scale your infrastructure, we are ready to deploy.
           </p>
 
-          <div 
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-            style={{
-              opacity: visibleSections.has('team') ? 1 : 0,
-              transform: visibleSections.has('team') ? 'translateY(0)' : 'translateY(40px)',
-              transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s'
-            }}
-          >
-            <Link 
-              href="/"
-              className="px-10 py-4 bg-white text-black font-bold rounded-full hover:bg-indigo-50 transition-all duration-300 transform hover:scale-105"
-            >
-              Start a Campaign
-            </Link>
-            <div className="flex gap-4 ml-0 sm:ml-6">
-              <a href="https://instagram.com" className="p-4 bg-white/10 rounded-full hover:bg-white/20 transition-colors border border-white/10">
-                <Instagram className="w-5 h-5" />
+          <div className="flex flex-col sm:flex-row gap-8 justify-center items-center">
+            <Magnetic>
+              <Link href="/#contact" className="px-12 py-6 bg-white text-black font-black uppercase tracking-widest text-xl rounded-full hover:scale-105 transition-transform shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_60px_rgba(255,255,255,0.4)]">
+                Start Sequence
+              </Link>
+            </Magnetic>
+            <div className="flex gap-4">
+              <a href="https://instagram.com" className="p-6 border-2 border-white/10 rounded-full hover:border-[#ff0055] hover:text-[#ff0055] transition-colors text-white">
+                <Instagram className="w-8 h-8" />
               </a>
-              <a href="https://linkedin.com" className="p-4 bg-white/10 rounded-full hover:bg-white/20 transition-colors border border-white/10">
-                <Linkedin className="w-5 h-5" />
+              <a href="https://linkedin.com" className="p-6 border-2 border-white/10 rounded-full hover:border-[#00ffcc] hover:text-[#00ffcc] transition-colors text-white">
+                <Linkedin className="w-8 h-8" />
               </a>
             </div>
           </div>
         </div>
       </section>
+
+      <footer className="py-12 text-center text-gray-600 font-bold uppercase tracking-widest text-sm border-t border-white/10 bg-black">
+        © {new Date().getFullYear()} MountLift. All systems operational.
+      </footer>
 
       <style jsx>{`
         @keyframes marquee {
@@ -522,51 +404,8 @@ export default function AboutUs() {
           100% { transform: translateX(-50%); }
         }
         .animate-marquee {
-          animation: marquee 30s linear infinite;
+          animation: marquee 20s linear infinite;
         }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          33% { transform: translateY(-15px) rotate(1deg); }
-          66% { transform: translateY(8px) rotate(-1deg); }
-        }
-        @keyframes float-slow {
-          0%, 100% { transform: translateY(0px) translateX(0px); }
-          25% { transform: translateY(-20px) translateX(8px); }
-          50% { transform: translateY(8px) translateX(-8px); }
-          75% { transform: translateY(-8px) translateX(12px); }
-        }
-        @keyframes float-delayed {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          33% { transform: translateY(-12px) rotate(1deg); }
-          66% { transform: translateY(6px) rotate(-1deg); }
-        }
-        .animate-float { animation: float 8s ease-in-out infinite; }
-        .animate-float-slow { animation: float-slow 12s ease-in-out infinite; }
-        .animate-float-delayed { animation: float-delayed 10s ease-in-out infinite; animation-delay: 3s; }
-        .floating-element { animation: float 8s ease-in-out infinite; }
-        .floating-element-slow { animation: float-slow 12s ease-in-out infinite; }
-        .floating-element-delayed { animation: float-delayed 10s ease-in-out infinite; animation-delay: 2s; }
-        
-        .glossy-bubble {
-          background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(200, 200, 255, 0.4) 100%);
-          border-radius: 50%;
-          backdrop-filter: blur(10px);
-          box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.18);
-        }
-        .glossy-bubble-lg {
-          @extend .glossy-bubble;
-          background: linear-gradient(135deg, rgba(255, 230, 255, 0.6) 0%, rgba(200, 200, 255, 0.2) 100%);
-        }
-        .glossy-bubble-sm {
-          @extend .glossy-bubble;
-          background: linear-gradient(135deg, rgba(230, 230, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 100%);
-        }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f5f5f5; }
-        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
       `}</style>
     </div>
   )
