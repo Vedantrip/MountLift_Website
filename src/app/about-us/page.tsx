@@ -376,13 +376,13 @@ export default function AboutUsAdvanced() {
             Whether you are a brand looking to establish market dominance or a creator ready to scale your infrastructure, we are ready to deploy.
           </p>
 
-          <div 
+          {/* Corrected Layout Wrappers using seamless Framer Motion controls */}
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.2 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-            style={{
-              opacity: visibleSections.has('team') ? 1 : 0,
-              transform: visibleSections.has('team') ? 'translateY(0)' : 'translateY(40px)',
-              transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s'
-            }}
           >
             <Link 
               href="/"
@@ -398,7 +398,7 @@ export default function AboutUsAdvanced() {
                 <Linkedin className="w-5 h-5" />
               </a>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 

@@ -494,11 +494,11 @@ export default function MountLiftAdvanced() {
             System<br/>Ready.
           </h2>
           <div className="flex flex-col gap-4">
-            <a href="mailto:hello@mountlift.agency" className="text-2xl md:text-4xl font-bold hover:text-[#ff0055] transition-colors underline decoration-2 underline-offset-8">
-              hello@mountlift.agency
+            <a href="mailto:mountliftagency@gmail.com" className="text-2xl md:text-4xl font-bold hover:text-[#ff0055] transition-colors underline decoration-2 underline-offset-8">
+              mountliftagency@gmail.com
             </a>
             <div className="flex gap-6 mt-4">
-              <Link href="https://instagram.com" target="_blank" className="font-bold uppercase tracking-widest text-sm hover:text-[#00ffcc] transition-colors">Instagram</Link>
+              <Link href="https://www.instagram.com/mount.lift/" target="_blank" className="font-bold uppercase tracking-widest text-sm hover:text-[#00ffcc] transition-colors">Instagram</Link>
               <Link href="https://www.linkedin.com/company/mountlift-agency" target="_blank" className="font-bold uppercase tracking-widest text-sm hover:text-[#00ffcc] transition-colors">LinkedIn</Link>
             </div>
           </div>
