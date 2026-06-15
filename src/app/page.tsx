@@ -86,8 +86,9 @@ export default function MountLiftAdvanced() {
         
         <div className="w-px h-4 bg-white/20" />
 
+        {/* Redirected navigation button to dedicated route */}
         <Link 
-          href="#contact" 
+          href="/contact" 
           className="px-5 py-2 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-full hover:bg-[#ff0055] hover:text-white transition-colors shadow-[0_0_20px_rgba(255,255,255,0.2)]"
         >
           Initialize
@@ -250,8 +251,8 @@ export default function MountLiftAdvanced() {
             <p className="text-sm text-gray-400 uppercase tracking-wider">Demographic Match Accuracy</p>
           </div>
 
-          {/* Action Card */}
-          <Link href="#contact" className="md:col-span-1 bg-white text-black rounded-3xl p-8 flex flex-col justify-between hover:rotate-2 transition-transform cursor-pointer group">
+          {/* Redirected action card link to dedicated /contact path */}
+          <Link href="/contact" className="md:col-span-1 bg-white text-black rounded-3xl p-8 flex flex-col justify-between hover:rotate-2 transition-transform cursor-pointer group">
             <ArrowUpRight className="w-10 h-10 self-end group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             <h4 className="text-2xl font-black uppercase">Request<br/>Blueprint</h4>
           </Link>
@@ -475,6 +476,7 @@ export default function MountLiftAdvanced() {
               </div>
             </div>
 
+            {/* Redirected CTA inside the simulator structure */}
             <div className="mt-12 pt-8 border-t border-white/5 flex justify-center">
               <Link 
                 href="/contact"
@@ -488,6 +490,7 @@ export default function MountLiftAdvanced() {
       </section>
 
       {/* 10. BRUTALIST FOOTER */}
+      {/* Kept id="contact" on the footer component container so internal document links do not break */}
       <footer id="contact" className="relative z-10 bg-black pt-32 pb-10 px-6 border-t border-white/10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end gap-10 mb-20">
           <h2 className="text-[10vw] md:text-[8vw] leading-[0.8] font-black uppercase tracking-tighter text-white">
