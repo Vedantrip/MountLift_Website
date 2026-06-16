@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform, useSpring, useMotionValue, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, Target, Users, TrendingUp, Lightbulb, Globe, Instagram, Linkedin, Link as LinkIcon, BarChart3, ShieldAlert, Cpu, Network } from 'lucide-react'
+import { ArrowLeft, Target, Users, TrendingUp, Globe, Instagram, Linkedin, BarChart3, ShieldAlert, Cpu, Network, Sparkles, Zap } from 'lucide-react'
 import Link from 'next/link'
 
 // --- UTILITIES ---
@@ -44,7 +44,6 @@ const Magnetic = ({ children, className }: { children: React.ReactNode, classNam
   )
 }
 
-// --- NEW ANIMATED LOGO COMPONENT ---
 const AnimatedLogo = () => {
   return (
     <Link href="/" className="flex items-center gap-1 group">
@@ -68,17 +67,28 @@ export default function AboutUsAdvanced() {
   const [isScrolled, setIsScrolled] = useState(false)
   const { scrollYProgress } = useScroll()
   
-  // Drastic scroll transformations
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '50%'])
-  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8])
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
-  const rotateX = useTransform(scrollYProgress, [0, 0.2], [0, 45])
+  // Dynamic Real-time Equalizer Heights Array State
+  const [eqHeights, setEqHeights] = useState([35, 60, 20, 80, 45, 55, 30])
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    
+    // Animate Equalizer Nodes without performance lag loops
+    const interval = setInterval(() => {
+      setEqHeights(prev => prev.map(() => Math.floor(Math.random() * 75) + 15))
+    }, 120)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      clearInterval(interval)
+    }
   }, [])
+  
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '50%'])
+  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8])
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
+  const rotateX = useTransform(scrollYProgress, [0, 0.2], [0, 45])
 
   const values = [
     { title: 'Authentic Verification', description: 'We filter out bot traffic and engagement pods. Genuine connections only.', icon: ShieldAlert, color: '#ff0055' },
@@ -111,43 +121,83 @@ export default function AboutUsAdvanced() {
         </div>
       </nav>
 
-      {/* Hero Section - Drastic 3D transformations */}
-      <section className="relative min-h-screen flex items-center justify-center px-6 pt-24 overflow-hidden perspective-1000">
-        {/* Massive glowing orb background */}
+      {/* Hero Section - Drastic 3D transformations & Kinetic Interactions */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 overflow-hidden perspective-1000">
+        
+        {/* Massive breathing orb background */}
         <motion.div style={{ y: backgroundY }} className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
-          <div className="w-[800px] h-[800px] bg-gradient-to-tr from-[#9900ff]/20 to-[#00ffcc]/20 blur-[150px] rounded-full animate-pulse-ring" />
+          <motion.div 
+            animate={{ scale: [1, 1.1, 1], opacity: [0.6, 0.9, 0.6] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="w-[800px] h-[800px] bg-gradient-to-tr from-[#9900ff]/20 to-[#00ffcc]/20 blur-[150px] rounded-full" 
+          />
         </motion.div>
 
         <motion.div 
           style={{ scale: heroScale, opacity: heroOpacity, rotateX: rotateX }} 
-          className="max-w-5xl mx-auto text-center relative z-10 preserve-3d"
+          className="max-w-5xl mx-auto text-center relative z-10 preserve-3d w-full"
         >
           <motion.div
             initial={{ opacity: 0, y: 100, rotateX: -45 }}
             animate={{ opacity: 1, y: 0, rotateX: 0 }}
             transition={{ duration: 1.2, type: "spring", bounce: 0.4 }}
           >
-            <div className="inline-flex items-center gap-2 border border-[#ff0055]/50 bg-[#ff0055]/10 text-[#ff0055] font-black tracking-widest uppercase text-xs px-6 py-2 rounded-full mb-8 shadow-[0_0_30px_rgba(255,0,85,0.3)]">
+            {/* Interactive Cyber-Badge */}
+            <motion.div 
+              whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(255,0,85,0.5)", borderColor: "rgba(255,0,85,1)" }}
+              className="inline-flex items-center gap-2 border border-[#ff0055]/50 bg-[#ff0055]/10 text-[#ff0055] font-black tracking-widest uppercase text-xs px-6 py-2 rounded-full mb-8 shadow-[0_0_30px_rgba(255,0,85,0.3)] cursor-crosshair transition-all"
+            >
               <span className="w-2 h-2 rounded-full bg-[#ff0055] animate-ping" />
               System Architecture // Core Identity
-            </div>
+            </motion.div>
             
-            <h1 className="text-[12vw] md:text-[8vw] font-black tracking-tighter leading-[0.8] mb-8 uppercase flex flex-col">
-              <span className="text-white">WE ARE</span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00ffcc] via-[#9900ff] to-[#ff0055] drop-shadow-[0_0_20px_rgba(0,255,204,0.4)]">
+            {/* Infinite Flowing Gradient Headline */}
+            <h1 className="text-[14vw] md:text-[10vw] font-black tracking-tighter leading-[0.85] mb-8 uppercase flex flex-col relative group">
+              <span className="text-white drop-shadow-2xl">WE ARE</span>
+              <motion.span 
+                className="text-transparent bg-clip-text bg-[linear-gradient(90deg,#00ffcc,#9900ff,#ff0055,#00ffcc)] bg-[length:300%_auto] drop-shadow-[0_0_30px_rgba(0,255,204,0.3)]"
+                animate={{ backgroundPosition: ["0% center", "-300% center"] }}
+                transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
+              >
                 MOUNTLIFT.
-              </span>
+              </motion.span>
             </h1>
             
+            {/* Interactive Subtext */}
             <p className="text-xl md:text-3xl text-gray-400 max-w-3xl mx-auto font-bold leading-tight mix-blend-difference">
-              Empowering brands to build authentic infrastructure that drives <span className="text-[#00ffcc] underline decoration-2 underline-offset-4">measurable conversions</span> in the digital age.
+              Empowering brands to build authentic infrastructure that drives{' '}
+              <motion.span 
+                whileHover={{ color: "#ffffff", textShadow: "0 0 20px #00ffcc", borderBottomColor: "#ffffff" }}
+                className="text-[#00ffcc] underline decoration-2 underline-offset-4 cursor-pointer transition-all duration-300"
+              >
+                measurable conversions
+              </motion.span>
+              {' '}in the digital age.
             </p>
           </motion.div>
         </motion.div>
+
+        {/* Kinetic Scroll Indicator */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 1 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-gray-500 font-mono text-[10px] uppercase tracking-widest"
+        >
+          <span>Initialize Scroll</span>
+          <div className="w-[1px] h-12 bg-white/10 relative overflow-hidden">
+            <motion.div 
+              animate={{ y: ["-100%", "200%"] }} 
+              transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+              className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-transparent via-[#00ffcc] to-transparent"
+            />
+          </div>
+        </motion.div>
+
       </section>
 
       {/* Hyper-Speed Marquee Strip */}
-      <div className="bg-[#ff0055] py-4 overflow-hidden relative z-20 border-y border-white/20 transform -skew-y-2 translate-y-12">
+      <div className="bg-[#ff0055] py-4 overflow-hidden relative z-20 border-y border-white/20 transform -skew-y-2 translate-y-12 shadow-[0_10px_30px_rgba(255,0,85,0.3)]">
         <div className="flex animate-marquee whitespace-nowrap">
           {[...Array(15)].map((_, i) => (
             <span key={i} className="mx-6 text-2xl font-black uppercase tracking-tighter flex items-center gap-6 text-black">
@@ -157,7 +207,54 @@ export default function AboutUsAdvanced() {
         </div>
       </div>
 
-      {/* Mission Section - Cybernetic Terminal Design */}
+      {/* ── HUMOROUS IG QUOTE & FLOATING EMOJI SECTION ── */}
+      <section className="relative z-30 py-32 px-6 max-w-5xl mx-auto mt-24">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
+          whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+          viewport={{ once: true }}
+          transition={{ type: "spring", damping: 15 }}
+          className="card-glass rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden border border-white/20 shadow-[0_0_50px_rgba(0,255,204,0.1)]"
+        >
+          {/* Zesty Giant Floating Emoji wrapper */}
+          <motion.div 
+            animate={{ 
+              y: [-15, 15, -15],
+              rotate: [-6, 6, -6],
+              scale: [1, 1.05, 1]
+            }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 4, 
+              ease: "easeInOut" 
+            }}
+            className="text-7xl md:text-8xl block mb-8 select-none drop-shadow-[0_0_40px_rgba(0,255,204,0.3)] cursor-grab active:cursor-grabbing"
+            whileHover={{ scale: 1.2, rotate: 15 }}
+          >
+            🤑
+          </motion.div>
+
+          <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#00ffcc] bg-[#00ffcc]/10 px-4 py-1 rounded-full mb-8 inline-block">
+            Reality Check
+          </span>
+
+          <h2 className="text-3xl md:text-6xl font-black tracking-tight leading-tight max-w-4xl mx-auto flex flex-col gap-2">
+            <span className="text-[#ff0055]">Still think influencer marketing is about views?</span>
+            <span className="text-[#00ffcc] text-6xl md:text-[6rem] leading-none my-4">good.</span>
+            <span className="text-gray-300 text-2xl md:text-4xl font-bold">
+              that's why <span className="text-[#ff0055] uppercase">brands</span> <span className="text-white uppercase">need us.</span>
+            </span>
+          </h2>
+
+          <div className="w-16 h-1 bg-gradient-to-r from-[#00ffcc] to-[#ff0055] mx-auto my-10 rounded-full" />
+
+          <p className="text-[11px] font-black uppercase tracking-widest text-gray-500 flex items-center justify-center gap-2">
+            <Zap className="w-3 h-3 text-[#ffcc00]" /> MOUNTLIFT STRATEGIC BLUEPRINT
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Mission Section */}
       <section className="py-40 px-6 lg:px-8 relative z-10 bg-[#0a0a0a]">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
           
@@ -184,7 +281,7 @@ export default function AboutUsAdvanced() {
             </div>
           </motion.div>
 
-          {/* Right Side: Static Data Architecture Graphic */}
+          {/* Right Side: Interactive Data Architecture Graphic */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -192,62 +289,59 @@ export default function AboutUsAdvanced() {
             transition={{ duration: 0.8, type: "spring" }}
             className="card-glass h-[500px] rounded-[3rem] relative overflow-hidden group border border-white/10"
           >
-            {/* Background Grid */}
             <div className="absolute inset-0 grid-overlay opacity-30" />
             
-            {/* Top Left: System Status Log */}
             <div className="absolute top-8 left-8 font-mono text-[10px] uppercase tracking-widest z-10">
               <div className="text-gray-500 mb-1">NODE_ID: MTLFT-CORE</div>
               <div className="text-[#00ffcc] flex items-center gap-2">
-                <div className="w-1.5 h-1.5 bg-[#00ffcc] rounded-full" />
-                STATUS: OPTIMAL
+                <span className="w-1.5 h-1.5 bg-[#00ffcc] rounded-full animate-ping" />
+                STATUS: LIVE_MATRIX
               </div>
             </div>
 
-            {/* Top Right: Vetting Badge */}
             <div className="absolute top-8 right-8 border border-[#ff0055]/30 bg-[#ff0055]/10 px-4 py-2 rounded-md flex items-center gap-2 z-10">
               <ShieldAlert className="w-4 h-4 text-[#ff0055]" />
               <span className="font-black uppercase text-[10px] text-white">Vetting Locked</span>
             </div>
 
-            {/* Center: Abstract Network Node (Static) */}
+            {/* Center abstract node */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
-              {/* Concentric targeting rings */}
               <div className="w-72 h-72 border border-white/5 rounded-full flex items-center justify-center relative">
                 <div className="w-52 h-52 border border-[#00ffcc]/20 rounded-full flex items-center justify-center border-dashed">
-                  <div className="w-32 h-32 bg-[#0a0a0a] rounded-full border-2 border-[#00ffcc] shadow-[0_0_50px_rgba(0,255,204,0.15)] flex items-center justify-center relative z-10 transition-transform duration-500 group-hover:scale-105">
+                  <motion.div 
+                    whileHover={{ scale: 1.1, rotate: 90 }}
+                    className="w-32 h-32 bg-[#0a0a0a] rounded-full border-2 border-[#00ffcc] shadow-[0_0_50px_rgba(0,255,204,0.3)] flex items-center justify-center relative z-10 transition-transform duration-500 cursor-pointer"
+                  >
                     <Network className="w-12 h-12 text-[#00ffcc]" />
-                  </div>
+                  </motion.div>
                 </div>
-                {/* Axis Lines */}
                 <div className="absolute top-0 left-1/2 w-px h-full bg-white/5" />
                 <div className="absolute top-1/2 left-0 w-full h-px bg-white/5" />
               </div>
             </div>
 
-            {/* Bottom Left: Static Equalizer/Data Bars */}
-            <div className="absolute bottom-8 left-8 flex items-end gap-1.5 z-10">
-              {[35, 60, 20, 80, 45, 55, 30].map((height, i) => (
-                <div 
+            {/* Bottom Left: Dynamic Live Fluctuating Equalizer Real-time Bars */}
+            <div className="absolute bottom-8 left-8 flex items-end gap-1.5 z-10 h-[80px]">
+              {eqHeights.map((height, i) => (
+                <motion.div 
                   key={i} 
-                  className="w-2 bg-[#9900ff]/60 rounded-t-sm" 
+                  className="w-2 bg-[#9900ff]/70 rounded-t-sm transition-all duration-100 ease-out" 
                   style={{ height: `${height}px` }} 
                 />
               ))}
             </div>
 
-            {/* Bottom Right: Telemetry Readout */}
             <div className="absolute bottom-8 right-8 font-mono text-[10px] text-right text-gray-500 uppercase tracking-widest z-10">
               <div>LATENCY: 12ms</div>
               <div>PACKETS: 14,029</div>
-              <div className="text-[#9900ff] mt-1">SECURE CONNECTION</div>
+              <div className="text-[#9900ff] mt-1">SECURE ARRAY ACTIVE</div>
             </div>
           </motion.div>
           
         </div>
       </section>
 
-      {/* Values Section - Bento Grid Upgrade */}
+      {/* Values Section */}
       <section className="py-32 px-6 lg:px-8 border-t border-white/10 bg-black/50 backdrop-blur-2xl relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="mb-20">
@@ -265,17 +359,16 @@ export default function AboutUsAdvanced() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1, type: "spring" }}
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="card-glass p-8 rounded-3xl group relative overflow-hidden"
+                whileHover={{ y: -12, scale: 1.03 }}
+                className="card-glass p-8 rounded-3xl group relative overflow-hidden cursor-crosshair"
               >
-                {/* Hover Glow Background */}
                 <div 
                   className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-2xl"
                   style={{ backgroundColor: value.color }}
                 />
                 
                 <div 
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-8 bg-black/50 border border-white/10 relative z-10"
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-8 bg-black/50 border border-white/10 relative z-10 group-hover:rotate-12 transition-transform duration-300"
                   style={{ color: value.color }}
                 >
                   <value.icon className="w-8 h-8" />
@@ -288,9 +381,8 @@ export default function AboutUsAdvanced() {
         </div>
       </section>
 
-      {/* The Campaign Ecosystem - Pipeline Visualization */}
+      {/* The Campaign Ecosystem */}
       <section className="py-40 px-6 lg:px-8 relative bg-[#0a0a0a] overflow-hidden">
-        {/* Huge background text */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none opacity-5">
            <h2 className="text-[20vw] font-black uppercase leading-none">PIPELINE</h2>
         </div>
@@ -313,13 +405,13 @@ export default function AboutUsAdvanced() {
                 whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.8, delay: i * 0.15, type: "spring", bounce: 0.4 }}
-                className="relative p-8 rounded-3xl bg-[#111] border border-white/10 hover:border-white/40 transition-all group overflow-hidden"
+                className="relative p-8 rounded-3xl bg-[#111] border border-white/10 hover:border-white/40 transition-all group overflow-hidden cursor-pointer"
+                whileHover={{ scale: 1.02 }}
               >
-                {/* Dynamic Gradient Bar */}
                 <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r ${step.color} transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500`} />
                 
                 <div className="flex justify-between items-start mb-8">
-                  <step.icon className="w-10 h-10 text-white opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all" />
+                  <step.icon className="w-10 h-10 text-white opacity-50 group-hover:opacity-100 group-hover:rotate-6 transition-all" />
                   <span className="text-4xl font-black text-white/10 group-hover:text-white/30 transition-colors">{step.phase}</span>
                 </div>
                 
@@ -332,7 +424,7 @@ export default function AboutUsAdvanced() {
       </section>
 
       {/* Giant Stats Bar */}
-      <section className="py-32 bg-[#ff0055] border-y border-white/20 transform skew-y-2 relative z-20">
+      <section className="py-32 bg-[#ff0055] border-y border-white/20 transform skew-y-2 relative z-20 shadow-[0_0_50px_rgba(255,0,85,0.4)]">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 transform -skew-y-2">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 text-center divide-x divide-black/20">
             {[
@@ -348,6 +440,7 @@ export default function AboutUsAdvanced() {
                 viewport={{ once: true }}
                 transition={{ type: "spring", delay: i * 0.1 }}
                 className="p-4"
+                whileHover={{ scale: 1.1, rotate: i % 2 === 0 ? 2 : -2 }}
               >
                 <div className="text-6xl lg:text-8xl font-black mb-4 text-black tracking-tighter drop-shadow-lg">
                   {stat.value}
@@ -376,7 +469,6 @@ export default function AboutUsAdvanced() {
             Whether you are a brand looking to establish market dominance or a creator ready to scale your infrastructure, we are ready to deploy.
           </p>
 
-          {/* Corrected Layout Wrappers using seamless Framer Motion controls */}
           <motion.div 
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -384,17 +476,19 @@ export default function AboutUsAdvanced() {
             transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.2 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <Link 
-              href="/"
-              className="px-10 py-4 bg-white text-black font-bold rounded-full hover:bg-indigo-50 transition-all duration-300 transform hover:scale-105"
-            >
-              Start a Campaign
-            </Link>
+            <Magnetic>
+              <Link 
+                href="/contact"
+                className="px-12 py-5 bg-white text-black font-black uppercase tracking-widest rounded-full hover:bg-neutral-200 transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.3)] block text-center"
+              >
+                Start a Campaign
+              </Link>
+            </Magnetic>
             <div className="flex gap-4 ml-0 sm:ml-6">
-              <a href="https://instagram.com" className="p-4 bg-white/10 rounded-full hover:bg-white/20 transition-colors border border-white/10">
+              <a href="https://www.instagram.com/mount.lift/" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/10 rounded-full hover:bg-white/20 hover:border-[#ff0055] hover:text-[#ff0055] transition-all border border-white/10">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="https://linkedin.com" className="p-4 bg-white/10 rounded-full hover:bg-white/20 transition-colors border border-white/10">
+              <a href="https://www.linkedin.com/company/mountlift-agency" target="_blank" rel="noopener noreferrer" className="p-4 bg-white/10 rounded-full hover:bg-white/20 hover:border-[#00ffcc] hover:text-[#00ffcc] transition-all border border-white/10">
                 <Linkedin className="w-5 h-5" />
               </a>
             </div>
